@@ -1,0 +1,124 @@
+﻿using Application.System.DTO;
+using Application.System.Interface.IUnitOparation;
+using Application.System.Utility;
+using Domin.System.Entities;
+using Domin.System.IRepository.IUnitOfRepository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.System.Sevices.UnitServices
+{
+    public class AllUnitServices : IAllUnitOparation
+    {
+        private readonly IUnitOfRepository _unitOfWork;
+
+        public AllUnitServices(IUnitOfRepository unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+        // Create a new Unit
+        public async Task<Response<UnitDTO>> CreateAsync(UnitDTO unitDTO)
+        {
+            // Validate the input
+            if (string.IsNullOrEmpty(unitDTO.Name))
+            {
+                return Response<UnitDTO>.Failure("Unit name is required", "400");
+            }
+
+            if (unitDTO.Branch_Id <= 0)
+            {
+                return Response<UnitDTO>.Failure("Branch ID is invalid", "400");
+            }
+
+            // Map UnitDTO to Unit entity
+            var unit = new Unit
+            {
+                Name = unitDTO.Name,
+                Branch_Id = unitDTO.Branch_Id
+            };
+
+            // Add the Unit entity to the repository
+            await _unitOfWork._Unit.AddAsync(unit);
+
+            // Map the saved Unit entity back to UnitDTO
+            unitDTO.Id_Unit = unit.Id_Unit;
+            return Response<UnitDTO>.Success(unitDTO, "Unit created successfully");
+        }
+
+        // Delete a Unit by ID
+        public async Task<Response> DeleteAsync(int id)
+        {
+            var unit = await _unitOfWork._Unit.GetByIdAsync(id);
+            if (unit == null)
+            {
+                return Response.Failure("Unit not found", "404");
+            }
+
+            await _unitOfWork._Unit.DeleteAsync(id);
+
+            return Response.Success("Unit deleted successfully");
+        }
+
+        public async Task<Response<List<UnitDTO>>> GetAllAsync()
+        {
+            var units = await _unitOfWork._Unit.GetAllAsync();
+            var unitDTOs = units.Select(MapToDTO).ToList();
+            return Response<List<UnitDTO>>.Success(unitDTOs, "All units retrieved successfully");
+        }
+
+        public async Task<Response<List<UnitDTO>>> GetAllIncludeToBranchAsync()
+        {
+            var units = await _unitOfWork._Unit.GetAllIncludeToBranchAsync();
+            var unitDTOs = units.Select(MapToDTO).ToList();
+            return Response<List<UnitDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
+        }
+
+        public async Task<List<UnitDTO>> GetAllUnitsByBranch(int branchId)
+        {
+            var units = await _unitOfWork._Unit.GetAllUnitsByBranch(branchId);
+            return units.Select(MapToDTO).ToList();
+        }
+
+        public async Task<Response<UnitDTO>> GetByIdAsync(int id)
+        {
+            var unit = await _unitOfWork._Unit.GetByIdAsync(id);
+            if (unit == null)
+            {
+                return Response<UnitDTO>.Failure("Unit not found", "404");
+            }
+
+            var unitDTO = MapToDTO(unit);
+            return Response<UnitDTO>.Success(unitDTO, "Unit retrieved successfully");
+        }
+
+        public async Task<Response<UnitDTO>> UpdateAsync(UnitDTO unitDTO)
+        {
+            var unit = await _unitOfWork._Unit.GetByIdAsync(unitDTO.Id_Unit);
+            if (unit == null)
+            {
+                return Response<UnitDTO>.Failure("Unit not found", "404");
+            }
+
+            // Update the Unit entity with data from UnitDTO
+            unit.Name = unitDTO.Name;
+            unit.Branch_Id = unitDTO.Branch_Id;
+
+            await _unitOfWork._Unit.UpdateAsync(unit);
+
+            return Response<UnitDTO>.Success(unitDTO,"Unit updated successfully");
+        }
+        private UnitDTO MapToDTO(Unit unit)
+        {
+            return new UnitDTO
+            {
+                Id_Unit = unit.Id_Unit,       // Map the Unit ID
+                Name = unit.Name,             // Map the Unit name
+                Branch_Id = unit.Branch_Id,   // Map the Branch ID
+                BranchName = unit.Branch?.Name // Map the Branch name (if Branch is included)
+            };
+        }
+    }
+}
