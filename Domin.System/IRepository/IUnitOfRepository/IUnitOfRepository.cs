@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domin.System.IRepository.IUnitOfRepositries
+namespace Domin.System.IRepository.IUnitOfRepository
 {
     public interface IUnitOfRepository
     {
