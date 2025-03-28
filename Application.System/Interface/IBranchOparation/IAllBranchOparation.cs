@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IBranchOparation
 {
-    public interface IAllBranchOparation: IAddBranchOparation, IDeleteBreanchOparation, IEditeBreanchOparation, IGetAllBreanchOparation, IGetByIdBreanchOparation
+    public interface IAllBranchOparation: IAddBranchOparation, IDeleteBreanchOparation, IEditBreanchOparation, IGetAllBreanchOparation, IGetByIdBreanchOparation
     {
     }
 }

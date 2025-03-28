@@ -1,15 +1,15 @@
 ﻿using Application.System.DTO;
 using Application.System.Interface.IBaseInterface;
+using Domin.System.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.System.Interface.IBranchOparation
+namespace Application.System.Interface.ICompanyOparation
 {
-    public interface IEditeBreanchOparation : IBaseUpdateAsync<BranchDTO>
+    public interface IEditCompanyOparation : IBaseUpdateAsync<CompanyDTO>
     {
-
     }
-}
+} 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IOrderDetailsOparation
 {
-    public interface IAllOrderDetailsOparation: IAddOrderDetailsOparation, IDeleteOrderDetailsOparation, IEditeOrderDetailsOparation, IGetAllOrderDetailsOparation, IGetByIdOrderDetailsOparation
+    public interface IAllOrderDetailsOparation: IAddOrderDetailsOparation, IDeleteOrderDetailsOparation, IEditOrderDetailsOparation, IGetAllOrderDetailsOparation, IGetByIdOrderDetailsOparation
     {
     }
 }

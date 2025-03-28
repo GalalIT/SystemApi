@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IProduct_UnitOpreation
 {
-    public interface IAllProduct_UnitOparation : IAddProduct_UnitOparation, IDeleteProduct_UnitOparation, IEditeProduct_UnitOparation, IGetAllProduct_UnitOparation, IGetByIdProduct_UnitOparation
+    public interface IAllProduct_UnitOparation : IAddProduct_UnitOparation, IDeleteProduct_UnitOparation, IEditProduct_UnitOparation, IGetAllProduct_UnitOparation, IGetByIdProduct_UnitOparation
     {
         Task<Response<List<ProductUnitDTO>>> GetProductUnitsByProductIdAsync(int productId);
 

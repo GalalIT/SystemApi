@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.ICompanyOparation
 {
-    public interface IAllCompanyOparation: IAddCompanyOparation, IDeleteCompanyOparation, IEditeCompanyOparation, IGetAllCompanyOparation, IGetByIdCompanyOparation
+    public interface IAllCompanyOparation: IAddCompanyOparation, IDeleteCompanyOparation, IEditCompanyOparation, IGetAllCompanyOparation, IGetByIdCompanyOparation
     { 
     }
 }

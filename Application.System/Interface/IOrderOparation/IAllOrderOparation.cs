@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IOrderOparation
 {
-    public interface IAllOrderOparation: IAddOrderOparation, IDeleteOrderOparation, IEditeOrderOparation, IGetAllOrderOparation, IGetByIdOrderOparation
+    public interface IAllOrderOparation: IAddOrderOparation, IDeleteOrderOparation, IEditOrderOparation, IGetAllOrderOparation, IGetByIdOrderOparation
     {
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IDepartmentOparation
 {
-    public interface IEditeDepartmentOparation : IBaseUpdateAsync<DepartmentDTO>
+    public interface IEditDepartmentOparation : IBaseUpdateAsync<DepartmentDTO>
     {
     }
 }

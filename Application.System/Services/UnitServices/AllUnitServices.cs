@@ -19,61 +19,89 @@ namespace Application.System.Services.UnitServices
         {
             _unitOfWork = unitOfWork;
         }
+
         // Create a new Unit
         public async Task<Response<UnitDTO>> CreateAsync(UnitDTO unitDTO)
         {
-            // Validate the input
-            if (string.IsNullOrEmpty(unitDTO.Name))
+            try
             {
-                return Response<UnitDTO>.Failure("Unit name is required", "400");
+                // Validate the input
+                if (string.IsNullOrEmpty(unitDTO.Name))
+                {
+                    return Response<UnitDTO>.Failure("Unit name is required", "400");
+                }
+
+                if (unitDTO.Branch_Id <= 0)
+                {
+                    return Response<UnitDTO>.Failure("Branch ID is invalid", "400");
+                }
+
+                // Map UnitDTO to Unit entity
+                var unit = new Unit
+                {
+                    Name = unitDTO.Name,
+                    Branch_Id = unitDTO.Branch_Id
+                };
+
+                // Add the Unit entity to the repository
+                await _unitOfWork._Unit.AddAsync(unit);
+
+                // Map the saved Unit entity back to UnitDTO
+                unitDTO.Id_Unit = unit.Id_Unit;
+                return Response<UnitDTO>.Success(unitDTO, "Unit created successfully");
             }
-
-            if (unitDTO.Branch_Id <= 0)
+            catch (Exception ex)
             {
-                return Response<UnitDTO>.Failure("Branch ID is invalid", "400");
+                return Response<UnitDTO>.Failure($"Failed to create unit: {ex.Message}", "500");
             }
-
-            // Map UnitDTO to Unit entity
-            var unit = new Unit
-            {
-                Name = unitDTO.Name,
-                Branch_Id = unitDTO.Branch_Id
-            };
-
-            // Add the Unit entity to the repository
-            await _unitOfWork._Unit.AddAsync(unit);
-
-            // Map the saved Unit entity back to UnitDTO
-            unitDTO.Id_Unit = unit.Id_Unit;
-            return Response<UnitDTO>.Success(unitDTO, "Unit created successfully");
         }
 
         // Delete a Unit by ID
         public async Task<Response> DeleteAsync(int id)
         {
-            var unit = await _unitOfWork._Unit.GetByIdAsync(id);
-            if (unit == null)
+            try
             {
-                return Response.Failure("Unit not found", "404");
+                var unit = await _unitOfWork._Unit.GetByIdAsync(id);
+                if (unit == null)
+                {
+                    return Response.Failure("Unit not found", "404");
+                }
+
+                await _unitOfWork._Unit.DeleteAsync(id);
+                return Response.Success("Unit deleted successfully");
             }
-
-            await _unitOfWork._Unit.DeleteAsync(id);
-
-            return Response.Success("Unit deleted successfully");
+            catch (Exception ex)
+            {
+                return Response.Failure($"Failed to delete unit: {ex.Message}", "500");
+            }
         }
 
         public async Task<Response<List<UnitDTO>>> GetAllAsync()
         {
-            var units = await _unitOfWork._Unit.GetAllAsync();
-            var unitDTOs = units.Select(MapToDTO).ToList();
-            return Response<List<UnitDTO>>.Success(unitDTOs, "All units retrieved successfully");
+            try
+            {
+                var units = await _unitOfWork._Unit.GetAllAsync();
+                var unitDTOs = units.Select(MapToDTO).ToList();
+                return Response<List<UnitDTO>>.Success(unitDTOs, "All units retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<List<UnitDTO>>.Failure($"Failed to retrieve units: {ex.Message}", "500");
+            }
         }
 
         public async Task<Response<List<UnitDTO>>> GetAllIncludeToBranchAsync()
         {
-            var units = await _unitOfWork._Unit.GetAllIncludeToBranchAsync();
-            var unitDTOs = units.Select(MapToDTO).ToList();
-            return Response<List<UnitDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
+            try
+            {
+                var units = await _unitOfWork._Unit.GetAllIncludeToBranchAsync();
+                var unitDTOs = units.Select(MapToDTO).ToList();
+                return Response<List<UnitDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<List<UnitDTO>>.Failure($"Failed to retrieve units with branch details: {ex.Message}", "500");
+            }
         }
 
         public async Task<Response<List<UnitDTO>>> GetAllUnitsByBranch(int branchId)
@@ -86,39 +114,52 @@ namespace Application.System.Services.UnitServices
             }
             catch (Exception ex)
             {
-                // Log the exception if needed (e.g., _logger.LogError(ex, "Error fetching units"))
                 return Response<List<UnitDTO>>.Failure($"Failed to retrieve units: {ex.Message}", "500");
             }
         }
 
         public async Task<Response<UnitDTO>> GetByIdAsync(int id)
         {
-            var unit = await _unitOfWork._Unit.GetByIdAsync(id);
-            if (unit == null)
+            try
             {
-                return Response<UnitDTO>.Failure("Unit not found", "404");
-            }
+                var unit = await _unitOfWork._Unit.GetByIdAsync(id);
+                if (unit == null)
+                {
+                    return Response<UnitDTO>.Failure("Unit not found", "404");
+                }
 
-            var unitDTO = MapToDTO(unit);
-            return Response<UnitDTO>.Success(unitDTO, "Unit retrieved successfully");
+                var unitDTO = MapToDTO(unit);
+                return Response<UnitDTO>.Success(unitDTO, "Unit retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<UnitDTO>.Failure($"Failed to retrieve unit: {ex.Message}", "500");
+            }
         }
 
         public async Task<Response<UnitDTO>> UpdateAsync(UnitDTO unitDTO)
         {
-            var unit = await _unitOfWork._Unit.GetByIdAsync(unitDTO.Id_Unit);
-            if (unit == null)
+            try
             {
-                return Response<UnitDTO>.Failure("Unit not found", "404");
+                var unit = await _unitOfWork._Unit.GetByIdAsync(unitDTO.Id_Unit);
+                if (unit == null)
+                {
+                    return Response<UnitDTO>.Failure("Unit not found", "404");
+                }
+
+                // Update the Unit entity with data from UnitDTO
+                unit.Name = unitDTO.Name;
+                unit.Branch_Id = unitDTO.Branch_Id;
+
+                await _unitOfWork._Unit.UpdateAsync(unit);
+                return Response<UnitDTO>.Success(unitDTO, "Unit updated successfully");
             }
-
-            // Update the Unit entity with data from UnitDTO
-            unit.Name = unitDTO.Name;
-            unit.Branch_Id = unitDTO.Branch_Id;
-
-            await _unitOfWork._Unit.UpdateAsync(unit);
-
-            return Response<UnitDTO>.Success(unitDTO,"Unit updated successfully");
+            catch (Exception ex)
+            {
+                return Response<UnitDTO>.Failure($"Failed to update unit: {ex.Message}", "500");
+            }
         }
+
         private UnitDTO MapToDTO(Unit unit)
         {
             return new UnitDTO

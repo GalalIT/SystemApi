@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IUnitOparation
 {
-    public interface IAllUnitOparation: IAddUnitOparation, IDeleteUnitOparation, IEditeUnitOparation, IGetAllUnitOparation, IGetByIdUnitOparation
+    public interface IAllUnitOparation: IAddUnitOparation, IDeleteUnitOparation, IEditUnitOparation, IGetAllUnitOparation, IGetByIdUnitOparation
     {
     }
 }

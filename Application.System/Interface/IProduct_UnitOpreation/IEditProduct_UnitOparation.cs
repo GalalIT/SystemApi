@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.System.Interface.IOrderDetailsOparation
+namespace Application.System.Interface.IProduct_UnitOpreation
 {
-    public interface IEditeOrderDetailsOparation : IBaseUpdateAsync<OrderDetailsDTO>
+    public interface IEditProduct_UnitOparation : IBaseUpdateAsync<ProductUnitDTO>
     {
     }
 }

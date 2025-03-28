@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IDepartmentOparation
 {
-    public interface IAllDepartmentOparation:IAddDepartmentOparation,IDeleteDepartmentOparation,IEditeDepartmentOparation,IGetAllDepartmentOparation,IGetByIdDepartmentOparation
+    public interface IAllDepartmentOparation:IAddDepartmentOparation,IDeleteDepartmentOparation,IEditDepartmentOparation,IGetAllDepartmentOparation,IGetByIdDepartmentOparation
     {
     }
 } 

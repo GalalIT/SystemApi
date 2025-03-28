@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Interface.IUnitOparation
 {
-    public interface IEditeUnitOparation : IBaseUpdateAsync<UnitDTO>
+    public interface IEditUnitOparation : IBaseUpdateAsync<UnitDTO>
     {
     }
 }
