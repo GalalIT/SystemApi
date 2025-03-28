@@ -76,10 +76,19 @@ namespace Application.System.Services.UnitServices
             return Response<List<UnitDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
         }
 
-        public async Task<List<UnitDTO>> GetAllUnitsByBranch(int branchId)
+        public async Task<Response<List<UnitDTO>>> GetAllUnitsByBranch(int branchId)
         {
-            var units = await _unitOfWork._Unit.GetAllUnitsByBranch(branchId);
-            return units.Select(MapToDTO).ToList();
+            try
+            {
+                var units = await _unitOfWork._Unit.GetAllUnitsByBranch(branchId);
+                var unitDTOs = units.Select(MapToDTO).ToList();
+                return Response<List<UnitDTO>>.Success(unitDTOs, "Units retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed (e.g., _logger.LogError(ex, "Error fetching units"))
+                return Response<List<UnitDTO>>.Failure($"Failed to retrieve units: {ex.Message}", "500");
+            }
         }
 
         public async Task<Response<UnitDTO>> GetByIdAsync(int id)

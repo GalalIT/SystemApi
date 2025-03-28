@@ -11,7 +11,7 @@ namespace Application.System.Interface.IUnitOparation
 {
     public interface IGetAllUnitOparation : IBaseGetAllAsync<UnitDTO>
     {
-        Task<List<UnitDTO>> GetAllUnitsByBranch(int branchId);
+        Task<Response<List<UnitDTO>>> GetAllUnitsByBranch(int branchId);
         Task<Response<List<UnitDTO>>> GetAllIncludeToBranchAsync();
     }
 }
