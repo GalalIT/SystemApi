@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.System.Sevices.UnitServices
+namespace Application.System.Services.UnitServices
 {
     public class AllUnitServices : IAllUnitOparation
     {
