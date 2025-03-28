@@ -1,5 +1,5 @@
 ﻿using Domin.System.Entities;
-using Domin.System.IRepository.IAllProduct_UnitRepository;
+using Domin.System.IRepository.IProduct_UnitRepository;
 using Infrastructure.System.Data;
 using Infrastructure.System.Repository.BaseRepository.AllBaseRepository;
 using Microsoft.EntityFrameworkCore;

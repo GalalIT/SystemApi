@@ -1,5 +1,6 @@
-﻿using Domin.System.IRepository.IAllProduct_UnitRepository;
+﻿
 using Domin.System.IRepository.IBranchRepository;
+using Domin.System.IRepository.IProduct_UnitRepository;
 using Domin.System.IRepository.ICompanyRepository;
 using Domin.System.IRepository.IDepartmentRepository;
 using Domin.System.IRepository.IOrderDetailsRepository;
@@ -23,6 +24,6 @@ namespace Domin.System.IRepository.IUnitOfRepository
         IAllOrderRepository _Order { get; }
         IAllProductRepository _Product { get; }
         IAllUnitRepository _Unit { get; }
-        //IAllProduct_UnitRepository _ProductUnit { get; }
+        IAllProduct_UnitRepository _ProductUnit { get; }
     }
 }
