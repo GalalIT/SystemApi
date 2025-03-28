@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.System.Interface.IOrderOparation
+{
+    public interface IAllOrderOparation: IAddOrderOparation, IDeleteOrderOparation, IEditeOrderOparation, IGetAllOrderOparation, IGetByIdOrderOparation
+    {
+    }
+}
+ 
