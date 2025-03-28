@@ -15,7 +15,7 @@ namespace Application.System.Interface.IProductOparation
         Task<Response<List<Product>>> GetAllIncludeToUnitAsync();
         Task<Response<List<Product>>> GetAllIncludeToDepartmentAsync();
         Task<Response<List<Product>>> GetAllProductsByUserBranchAsync(int userBranchId);
-
+        Task<Response<ProductBranchResponse>> GetProductsByBranchWithDepartments(int userBranchId, int? departmentId);
     }
 }
  

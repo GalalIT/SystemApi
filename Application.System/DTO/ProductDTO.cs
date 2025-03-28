@@ -11,7 +11,14 @@ namespace Application.System.DTO
         public int Id_Product { get; set; }
         public string Name { get; set; }
         public int Department_Id { get; set; }
+        public string DepartmentName { get; set; }
         public decimal Price { get; set; }
         public bool? IsActive { get; set; }
+    }
+    public class ProductBranchResponse
+    {
+        public List<ProductDTO> Products { get; set; }
+        public List<DepartmentDTO> Departments { get; set; }
+        public int? SelectedDepartmentId { get; set; }
     }
 }

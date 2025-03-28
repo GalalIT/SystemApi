@@ -19,6 +19,60 @@ namespace Application.System.Services.ProductServices
         {
             _unitOfWork = unitOfWork;
         }
+        public async Task<Response<ProductBranchResponse>> GetProductsByBranchWithDepartments(int userBranchId, int? departmentId)
+        {
+            try
+            {
+                // Validate branch ID
+                if (userBranchId <= 0)
+                    return Response<ProductBranchResponse>.Failure("Invalid branch ID", "400");
+
+                // Get all products for the branch
+                var products = await _unitOfWork._Product.GetAllProductsByUserBranchAsync(userBranchId);
+
+                // Filter by department if specified
+                if (departmentId.HasValue && departmentId.Value != 0)
+                {
+                    products = products.Where(p => p.Department_Id == departmentId.Value).ToList();
+                }
+
+                // Get all departments for the branch
+                var departments = await _unitOfWork._Department.GetAllDepartmentsByUserBranchAsync(userBranchId);
+
+                // Map to DTOs
+                var productDTOs = products.Select(p => new ProductDTO
+                {
+                    Id_Product = p.Id_Product,
+                    Name = p.Name,
+                    Department_Id = p.Department_Id,
+                    DepartmentName = p.Department?.Name,
+                    Price = p.Price,
+                    IsActive = p.IsActive
+                }).ToList();
+
+                var departmentDTOs = departments.Select(d => new DepartmentDTO
+                {
+                    Id_Department = d.Id_Department,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Branch_Id = d.Branch_Id
+                }).ToList();
+
+                // Create response
+                var response = new ProductBranchResponse
+                {
+                    Products = productDTOs,
+                    Departments = departmentDTOs,
+                    SelectedDepartmentId = departmentId
+                };
+
+                return Response<ProductBranchResponse>.Success(response, "Products retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<ProductBranchResponse>.Failure($"Failed to retrieve products: {ex.Message}", "500");
+            }
+        }
 
         public async Task<Response<ProductDTO>> CreateAsync(ProductDTO productDTO)
         {
