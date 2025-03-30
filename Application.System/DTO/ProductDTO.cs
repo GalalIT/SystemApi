@@ -21,4 +21,13 @@ namespace Application.System.DTO
         public List<DepartmentDTO> Departments { get; set; }
         public int? SelectedDepartmentId { get; set; }
     }
+    public class CreateProductWithUnitsDTO
+    {
+        public string Name { get; set; }
+        public int Department_Id { get; set; }
+        public decimal Price { get; set; }
+        public bool? IsActive { get; set; }
+        public List<int> UnitIds { get; set; }
+        public List<decimal> SpecialPrices { get; set; }
+    }
 }

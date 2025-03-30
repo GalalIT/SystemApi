@@ -1,4 +1,5 @@
 ﻿using Application.System.DTO;
+using Application.System.Interface.IProduct_UnitOperation;
 using Application.System.Interface.IProductOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
@@ -14,11 +15,96 @@ namespace Application.System.Services.ProductServices
     public class AllProductServices : IAllProductOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
+        private readonly IAllProduct_UnitOperation _productUnitService;
 
-        public AllProductServices(IUnitOfRepository unitOfWork)
+        public AllProductServices(
+            IUnitOfRepository unitOfWork,
+            IAllProduct_UnitOperation productUnitService)
         {
             _unitOfWork = unitOfWork;
+            _productUnitService = productUnitService;
         }
+        public async Task<Response<ProductDTO>> CreateWithUnitsAsync(CreateProductWithUnitsDTO productDto)
+        {
+            try
+            {
+                // Validate main product data
+                if (string.IsNullOrWhiteSpace(productDto.Name))
+                    return await Response<ProductDTO>.FailureAsync("Product name is required", "400");
+
+                if (productDto.Department_Id <= 0)
+                    return await Response<ProductDTO>.FailureAsync("Department ID is required", "400");
+
+                if (productDto.Price <= 0)
+                    return await Response<ProductDTO>.FailureAsync("Price must be greater than 0", "400");
+
+                // Validate units data
+                if (productDto.UnitIds == null || productDto.SpecialPrices == null)
+                    return await Response<ProductDTO>.FailureAsync("Unit details are required", "400");
+
+                if (productDto.UnitIds.Count != productDto.SpecialPrices.Count)
+                    return await Response<ProductDTO>.FailureAsync("Mismatched unit and price data", "400");
+
+                if (productDto.UnitIds.Count == 0)
+                    return await Response<ProductDTO>.FailureAsync("At least one unit must be specified", "400");
+
+                // Create the main product
+                var product = new Product
+                {
+                    Name = productDto.Name,
+                    Department_Id = productDto.Department_Id,
+                    Price = productDto.Price,
+                    IsActive = productDto.IsActive ?? true
+                };
+
+                await _unitOfWork._Product.AddAsync(product);
+                var productId = product.Id_Product;
+
+                // Create product units
+                var unitResults = new List<Response<ProductUnitDTO>>();
+                for (int i = 0; i < productDto.UnitIds.Count; i++)
+                {
+                    var productUnitDto = new ProductUnitDTO
+                    {
+                        ProductId = productId,
+                        UnitId = productDto.UnitIds[i],
+                        SpecialPrice = productDto.SpecialPrices[i]
+                    };
+
+                    var result = await _productUnitService.CreateAsync(productUnitDto);
+                    unitResults.Add(result);
+                }
+
+                // Check for any failures in unit creation
+                var failedUnits = unitResults.Where(r => !r.Succeeded).ToList();
+                if (failedUnits.Any())
+                {
+                    // Rollback product creation if any unit failed
+                    await _unitOfWork._Product.DeleteAsync(productId);
+
+                    return await Response<ProductDTO>.FailureAsync(
+                        $"Product created but failed to add {failedUnits.Count} units. First error: {failedUnits.First().Message}",
+                        "500");
+                }
+
+                // Map to DTO for response
+                var productDtoResponse = new ProductDTO
+                {
+                    Id_Product = product.Id_Product,
+                    Name = product.Name,
+                    Department_Id = product.Department_Id,
+                    Price = product.Price,
+                    IsActive = product.IsActive
+                };
+
+                return await Response<ProductDTO>.SuccessAsync(productDtoResponse, "Product with units created successfully");
+            }
+            catch (Exception ex)
+            {
+                return await Response<ProductDTO>.FailureAsync($"Failed to create product: {ex.Message}", "500");
+            }
+        }
+
         public async Task<Response<ProductBranchResponse>> GetProductsByBranchWithDepartments(int userBranchId, int? departmentId)
         {
             try
@@ -73,6 +159,7 @@ namespace Application.System.Services.ProductServices
                 return Response<ProductBranchResponse>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
+
 
         public async Task<Response<ProductDTO>> CreateAsync(ProductDTO productDTO)
         {
@@ -262,5 +349,7 @@ namespace Application.System.Services.ProductServices
                 IsActive = product.IsActive
             };
         }
+
+        
     }
 }
