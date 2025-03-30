@@ -1,5 +1,5 @@
 ﻿using Application.System.DTO;
-using Application.System.Interface.ICompanyOparation;
+using Application.System.Interface.ICompanyOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Services.CompanyServices
 {
-    public class AllCompanyServices : IAllCompanyOparation
+    public class AllCompanyServices : IAllCompanyOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
 

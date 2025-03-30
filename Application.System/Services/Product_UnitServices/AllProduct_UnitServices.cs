@@ -1,5 +1,5 @@
 ﻿using Application.System.DTO;
-using Application.System.Interface.IProduct_UnitOpreation;
+using Application.System.Interface.IProduct_UnitOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Services.Product_UnitServices
 {
-    public class AllProduct_UnitServices : IAllProduct_UnitOparation
+    public class AllProduct_UnitServices : IAllProduct_UnitOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
 

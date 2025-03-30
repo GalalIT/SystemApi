@@ -1,5 +1,5 @@
 ﻿using Application.System.DTO;
-using Application.System.Interface.IOrderDetailsOparation;
+using Application.System.Interface.IOrderDetailsOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Services.OrderDetailsServices
 {
-    public class AllOrderDetailsServices : IAllOrderDetailsOparation
+    public class AllOrderDetailsServices : IAllOrderDetailsOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
 

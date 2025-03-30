@@ -1,7 +1,7 @@
 ﻿using Application.System.DTO;
 using Application.System.Interface.ICartOperation;
-using Application.System.Interface.IOrderDetailsOparation;
-using Application.System.Interface.IOrderOparation;
+using Application.System.Interface.IOrderDetailsOperation;
+using Application.System.Interface.IOrderOperation;
 using Application.System.Utility;
 using Domin.System.IRepository.IUnitOfRepository;
 using System;
@@ -14,13 +14,13 @@ namespace Application.System.Services.CartServices
 {
     public class AllCartServices : ICartOperation
     {
-        private readonly IAllOrderOparation _orderService;
-        private readonly IAllOrderDetailsOparation _orderDetailsService;
+        private readonly IAllOrderOperation _orderService;
+        private readonly IAllOrderDetailsOperation _orderDetailsService;
         private readonly IUnitOfRepository _unitOfWork;
 
         public AllCartServices(
-            IAllOrderOparation orderService,
-            IAllOrderDetailsOparation orderDetailsService,
+            IAllOrderOperation orderService,
+            IAllOrderDetailsOperation orderDetailsService,
             IUnitOfRepository unitOfWork)
         {
             _orderService = orderService;

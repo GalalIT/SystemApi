@@ -1,5 +1,5 @@
 ﻿using Application.System.DTO;
-using Application.System.Interface.IBranchOparation;
+using Application.System.Interface.IBranchOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Services.BranchServices
 {
-    public class AllBranchServices : IAllBranchOparation
+    public class AllBranchServices : IAllBranchOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
 

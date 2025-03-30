@@ -1,5 +1,5 @@
 ﻿using Application.System.DTO;
-using Application.System.Interface.IDepartmentOparation;
+using Application.System.Interface.IDepartmentOperation;
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.System.Services.DepartmentServices
 {
-    public class AllDepartmentServices : IAllDepartmentOparation
+    public class AllDepartmentServices : IAllDepartmentOperation
     {
         private readonly IUnitOfRepository _unitOfWork;
 
