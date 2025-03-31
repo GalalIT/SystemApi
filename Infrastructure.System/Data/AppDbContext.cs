@@ -37,7 +37,7 @@ namespace Infrastructure.System.Data
                 Name = "Default Branch",
                 Address = "123 Default St.",
                 City = "Default City",
-                Phone = "775128735",
+                Phone = "777777777",
                 IsActive = true
 
             });
