@@ -16,30 +16,26 @@ namespace Application.System.Services.CartServices
     {
         private readonly IAllOrderOperation _orderService;
         private readonly IAllOrderDetailsOperation _orderDetailsService;
-        private readonly IUnitOfRepository _unitOfWork;
 
         public AllCartServices(
             IAllOrderOperation orderService,
-            IAllOrderDetailsOperation orderDetailsService,
-            IUnitOfRepository unitOfWork)
+            IAllOrderDetailsOperation orderDetailsService)
         {
             _orderService = orderService;
             _orderDetailsService = orderDetailsService;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<Response<int>> ProcessCartAsync(CreateCartDTO cartDto)
         {
             // Validate inputs
             if (cartDto.ProductUnitIds == null || cartDto.Quantities == null ||
-                cartDto.Prices == null || cartDto.Descriptions == null)
+                cartDto.Prices == null )
             {
                 return await Response<int>.FailureAsync("Product details are missing.", "400");
             }
 
             if (cartDto.ProductUnitIds.Count != cartDto.Quantities.Count ||
-                cartDto.ProductUnitIds.Count != cartDto.Prices.Count ||
-                cartDto.ProductUnitIds.Count != cartDto.Descriptions.Count)
+                cartDto.ProductUnitIds.Count != cartDto.Prices.Count)
             {
                 return await Response<int>.FailureAsync("Mismatched product details.", "400");
             }

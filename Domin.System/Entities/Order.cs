@@ -38,10 +38,7 @@ namespace Domin.System.Entities
         public string User_id { get; set; }
         [ForeignKey("User_id")]
         public virtual ApplicationUser? applicationUser { get; set; }
-
-
-        //[Required]
-        //public string SellerId { get; set; } //this for now how is do or seller this order
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
 
     }
 

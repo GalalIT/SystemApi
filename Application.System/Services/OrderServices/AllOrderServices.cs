@@ -107,6 +107,50 @@ namespace Application.System.Services.OrderServices
             }
         }
 
+        public async Task<Response<OrderDetailResponse>> GetOrderWithDetailsAsync(int orderId)
+        {
+            try
+            {
+                if (orderId <= 0)
+                    return Response<OrderDetailResponse>.Failure("Invalid order ID", "400");
+
+                var order = await _unitOfWork._Order.GetOrderWithDetailsAsync(orderId);
+
+                if (order == null)
+                    return Response<OrderDetailResponse>.Failure("Order not found", "404");
+
+                var response = new OrderDetailResponse
+                {
+                    OrderId = order.Id_Order,
+                    OrderNumber = order.OrderNumber,
+                    OrderDate = order.DateTime_Created,
+                    TotalAmount = order.Total_Amount,
+                    Discount = order.Discount,
+                    FinalAmount = order.Total_AmountAfterDiscount,
+                    BranchName = order.Branch?.Name,
+                    CompanyName = order.Company?.Name,
+                    CustomerName = order.applicationUser?.UserName,
+                    Items = order.OrderDetails.Select(od => new OrderItemDetail
+                    {
+                        ProductId = od.product_Unit.Product.Id_Product,
+                        ProductName = od.product_Unit.Product.Name,
+                        UnitName = od.product_Unit.Unit?.Name,
+                        Quantity = od.Quantity,
+                        UnitPrice = od.Quantity > 0 ? od.Total_Price / od.Quantity : 0,
+                        TotalPrice = od.Total_Price,
+                        Description = od.Description_product
+                    }).ToList()
+                };
+
+                return Response<OrderDetailResponse>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "Error retrieving order {OrderId}", orderId);
+                return Response<OrderDetailResponse>.Failure("Error retrieving order details", "500");
+            }
+        }
+
         public async Task<Response<OrderDTO>> UpdateAsync(OrderDTO orderDTO)
         {
             try

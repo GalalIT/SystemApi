@@ -1,5 +1,6 @@
 ﻿using Application.System.DTO;
 using Application.System.Interface.IBaseOperation;
+using Application.System.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Application.System.Interface.IOrderOperation
 {
     public interface IGetAllOrderOperation : IBaseGetAllAsync<OrderDTO>
     {
+        Task<Response<OrderDetailResponse>> GetOrderWithDetailsAsync(int orderId);
+
     }
 }
  
