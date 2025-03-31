@@ -19,6 +19,23 @@ namespace Application.System.Services.OrderServices
         {
             _unitOfWork = unitOfWork;
         }
+        public async Task<Response> DeleteAsync(int id)
+        {
+            try
+            {
+                var order = await _unitOfWork._Order.GetByIdAsync(id);
+                if (order == null)
+                    return Response.Failure("Order not found", "404");
+
+                await _unitOfWork._Order.DeleteAsync(id);
+                return Response.Success("Order deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response.Failure($"Failed to delete order: {ex.Message}", "500");
+            }
+        }
+
 
         public async Task<Response<OrderDTO>> CreateAsync(OrderDTO orderDTO)
         {
@@ -57,23 +74,6 @@ namespace Application.System.Services.OrderServices
             catch (Exception ex)
             {
                 return Response<OrderDTO>.Failure($"Failed to create order: {ex.Message}", "500");
-            }
-        }
-
-        public async Task<Response> DeleteAsync(int id)
-        {
-            try
-            {
-                var order = await _unitOfWork._Order.GetByIdAsync(id);
-                if (order == null)
-                    return Response.Failure("Order not found", "404");
-
-                await _unitOfWork._Order.DeleteAsync(id);
-                return Response.Success("Order deleted successfully");
-            }
-            catch (Exception ex)
-            {
-                return Response.Failure($"Failed to delete order: {ex.Message}", "500");
             }
         }
 
@@ -185,7 +185,8 @@ namespace Application.System.Services.OrderServices
                 return Response<OrderDTO>.Failure($"Failed to update order: {ex.Message}", "500");
             }
         }
-
+        
+        
         private OrderDTO MapToDTO(Order order)
         {
             return new OrderDTO

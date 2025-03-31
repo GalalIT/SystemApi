@@ -12,8 +12,8 @@ namespace Application.System.Interface.IProductOperation
 {
     public interface IAddProductOperation : IBaseCreateAsync<ProductDTO>
     {
-        Task<Response<ProductDTO>> CreateWithUnitsAsync(CreateProductWithUnitsDTO productDto);
-
+        Task<Response<ProductDTO>> CreateProductWithUnitsAsync(CreateProductWithUnitsDTO productDto);
+        Task<Response<ProductDTO>> UpdateProductWithUnitsAsync(int productId, CreateProductWithUnitsDTO productDto);
     }
 }
   

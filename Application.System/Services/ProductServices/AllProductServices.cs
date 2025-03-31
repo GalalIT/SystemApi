@@ -24,7 +24,7 @@ namespace Application.System.Services.ProductServices
             _unitOfWork = unitOfWork;
             _productUnitService = productUnitService;
         }
-        public async Task<Response<ProductDTO>> CreateWithUnitsAsync(CreateProductWithUnitsDTO productDto)
+        public async Task<Response<ProductDTO>> CreateProductWithUnitsAsync(CreateProductWithUnitsDTO productDto)
         {
             try
             {
@@ -104,7 +104,115 @@ namespace Application.System.Services.ProductServices
                 return await Response<ProductDTO>.FailureAsync($"Failed to create product: {ex.Message}", "500");
             }
         }
+        public async Task<Response<ProductDTO>> UpdateProductWithUnitsAsync(int productId, CreateProductWithUnitsDTO productDto)
+        {
+            try
+            {
+                // Validate main product data
+                if (string.IsNullOrWhiteSpace(productDto.Name))
+                    return await Response<ProductDTO>.FailureAsync("Product name is required", "400");
 
+                if (productDto.Department_Id <= 0)
+                    return await Response<ProductDTO>.FailureAsync("Department ID is required", "400");
+
+                if (productDto.Price <= 0)
+                    return await Response<ProductDTO>.FailureAsync("Price must be greater than 0", "400");
+
+                if (productDto.UnitIds == null || productDto.SpecialPrices == null)
+                    return await Response<ProductDTO>.FailureAsync("Unit details are required", "400");
+
+                if (productDto.UnitIds.Count != productDto.SpecialPrices.Count)
+                    return await Response<ProductDTO>.FailureAsync("Mismatched unit and price data", "400");
+
+                // Check if product exists
+                var product = await _unitOfWork._Product.GetByIdAsync(productId);
+                if (product == null)
+                    return await Response<ProductDTO>.FailureAsync("Product not found", "404");
+
+                // Update product details
+                product.Name = productDto.Name;
+                product.Department_Id = productDto.Department_Id;
+                product.Price = productDto.Price;
+                product.IsActive = productDto.IsActive ?? true;
+
+                await _unitOfWork._Product.UpdateAsync(product);
+
+                // Get existing product units directly from repository
+                var existingUnits = await _unitOfWork._ProductUnit.GetProductUnitsByProductIdAsync(productId);
+                var existingUnitIds = existingUnits.Select(u => u.UnitId).ToList();
+
+                var unitResults = new List<Response<ProductUnitDTO>>();
+
+                // Process each unit in the DTO
+                for (int i = 0; i < productDto.UnitIds.Count; i++)
+                {
+                    var unitId = productDto.UnitIds[i];
+                    var specialPrice = productDto.SpecialPrices[i];
+
+                    var existingUnit = existingUnits.FirstOrDefault(u => u.UnitId == unitId);
+                    if (existingUnit != null)
+                    {
+                        // Update existing unit
+                        var updateDto = new ProductUnitDTO
+                        {
+                            Id = existingUnit.Id,
+                            ProductId = productId,
+                            UnitId = unitId,
+                            SpecialPrice = specialPrice
+                        };
+                        var updateResult = await _productUnitService.UpdateAsync(updateDto);
+                        unitResults.Add(updateResult);
+                    }
+                    else
+                    {
+                        // Create new unit
+                        var newUnit = new ProductUnitDTO
+                        {
+                            ProductId = productId,
+                            UnitId = unitId,
+                            SpecialPrice = specialPrice
+                        };
+                        var createResult = await _productUnitService.CreateAsync(newUnit);
+                        unitResults.Add(createResult);
+                    }
+                }
+
+                // Find units to remove (exist in DB but not in DTO)
+                var unitsToRemove = existingUnits
+                    .Where(u => !productDto.UnitIds.Contains(u.UnitId))
+                    .ToList();
+
+                foreach (var unit in unitsToRemove)
+                {
+                    await _productUnitService.DeleteAsync(unit.Id);
+                }
+
+                // Check for any failures in unit operations
+                var failedUnits = unitResults.Where(r => !r.Succeeded).ToList();
+                if (failedUnits.Any())
+                {
+                    return await Response<ProductDTO>.FailureAsync(
+                        $"Product updated but {failedUnits.Count} unit operations failed. First error: {failedUnits.First().Message}",
+                        "500");
+                }
+
+                // Return updated product
+                var responseDto = new ProductDTO
+                {
+                    Id_Product = product.Id_Product,
+                    Name = product.Name,
+                    Department_Id = product.Department_Id,
+                    Price = product.Price,
+                    IsActive = product.IsActive
+                };
+
+                return await Response<ProductDTO>.SuccessAsync(responseDto, "Product with units updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return await Response<ProductDTO>.FailureAsync($"Failed to update product: {ex.Message}", "500");
+            }
+        }
         public async Task<Response<ProductBranchResponse>> GetProductsByBranchWithDepartments(int userBranchId, int? departmentId)
         {
             try
