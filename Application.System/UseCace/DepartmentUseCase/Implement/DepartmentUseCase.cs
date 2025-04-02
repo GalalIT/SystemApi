@@ -114,14 +114,14 @@ namespace Application.System.UseCace.DepartmentUseCase.Implement
             }
         }
 
-        public async Task<Response<List<DepartmentDTO>>> GetAllDepartmentsByUserBranch(int branchId)
+        public async Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsByUserBranch(int branchId)
         {
             try
             {
                 if (branchId <= 0)
                 {
                     _logger.LogWarning("Invalid branch ID requested: {BranchId}", branchId);
-                    return Response<List<DepartmentDTO>>.Failure("Invalid branch ID", "400");
+                    return Response<List<DepartmentWithBranchDTO>>.Failure("Invalid branch ID", "400");
                 }
 
                 var result = await _departmentService.GetAllDepartmentsByUserBranchAsync(branchId);
@@ -132,30 +132,30 @@ namespace Application.System.UseCace.DepartmentUseCase.Implement
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving departments for branch {BranchId}", branchId);
-                return Response<List<DepartmentDTO>>.Failure("Error retrieving departments", "500");
+                return Response<List<DepartmentWithBranchDTO>>.Failure("Error retrieving departments", "500");
             }
         }
 
-        public async Task<Response<List<DepartmentDTO>>> GetAllDepartmentsWithBranchInfo()
+        public async Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsWithBranchInfo()
         {
             try
             {
                 var response = await _departmentService.GetAllDepartmentIncludeToBranchAsync();
-
+                Console.WriteLine(response);
                 if (!response.Succeeded)
                 {
                     _logger.LogWarning("Failed to retrieve departments: {Message} (Status: {Status})",
                         response.Message, response.Status);
-                    return Response<List<DepartmentDTO>>.Failure(response.Message, response.Status);
+                    return Response<List<DepartmentWithBranchDTO>>.Failure(response.Message, response.Status);
                 }
 
                 _logger.LogInformation("Retrieved {Count} departments with branch info", response.Data.Count);
-                return Response<List<DepartmentDTO>>.Success(response.Data, response.Message, response.Status);
+                return Response<List<DepartmentWithBranchDTO>>.Success(response.Data, response.Message, response.Status);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving departments with branch info");
-                return Response<List<DepartmentDTO>>.Failure(
+                return Response<List<DepartmentWithBranchDTO>>.Failure(
                     "Error retrieving department details",
                     "500");
             }

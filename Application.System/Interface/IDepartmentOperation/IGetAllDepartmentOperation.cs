@@ -12,8 +12,8 @@ namespace Application.System.Interface.IDepartmentOperation
 {
     public interface IGetAllDepartmentOperation : IBaseGetAllAsync<DepartmentDTO>
     {
-        Task<Response<List<DepartmentDTO>>> GetAllDepartmentsByUserBranchAsync(int userBranchId); // New method
-        Task<Response<List<DepartmentDTO>>> GetAllDepartmentIncludeToBranchAsync();
+        Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsByUserBranchAsync(int userBranchId); // New method
+        Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentIncludeToBranchAsync();
 
     }
 }

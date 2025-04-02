@@ -15,7 +15,7 @@ namespace Application.System.UseCace.DepartmentUseCase.Interface
         Task<Response> DeleteDepartment(int id);
         Task<Response<DepartmentDTO>> GetDepartment(int id);
         Task<Response<List<DepartmentDTO>>> GetAllDepartments();
-        Task<Response<List<DepartmentDTO>>> GetAllDepartmentsByUserBranch(int userBranchId);
-        Task<Response<List<DepartmentDTO>>> GetAllDepartmentsWithBranchInfo();
+        Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsByUserBranch(int userBranchId);
+        Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsWithBranchInfo();
     }
 }

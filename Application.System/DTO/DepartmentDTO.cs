@@ -13,4 +13,9 @@ namespace Application.System.DTO
         public string? Description { get; set; }
         public int Branch_Id { get; set; }
     }
+    public class DepartmentWithBranchDTO : DepartmentDTO
+    {
+        public string BranchName { get; set; }
+        public string BranchAddress { get; set; }
+    }
 }

@@ -122,52 +122,65 @@ namespace Application.System.Services.DepartmentServices
                 return Response<List<DepartmentDTO>>.Failure($"Failed to retrieve departments: {ex.Message}", "500");
             }
         }
-        public async Task<Response<List<DepartmentDTO>>> GetAllDepartmentIncludeToBranchAsync()
+        public async Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentIncludeToBranchAsync()
         {
             try
             {
                 var departments = await _unitOfWork._Department.GetAllDepartmentIncludeToBranchAsync();
 
-                // Map to DTOs (without BranchName since it's not in DepartmentDTO)
-                var departmentDTOs = departments.Select(d => new DepartmentDTO
+                if (departments == null || !departments.Any())
                 {
-                    Id_Department = d.Id_Department,
-                    Name = d.Name,
-                    Description = d.Description,
-                    Branch_Id = d.Branch_Id
-                }).ToList();
+                    return Response<List<DepartmentWithBranchDTO>>.Success(
+                        new List<DepartmentWithBranchDTO>(),
+                        "No departments found",
+                        "200");
+                }
 
-                return Response<List<DepartmentDTO>>.Success(departmentDTOs, "Departments retrieved with branch relations");
+                var departmentDTOs = departments.Select(MapToDTOWithBranch).ToList();
+                return Response<List<DepartmentWithBranchDTO>>.Success(
+                    departmentDTOs,
+                    "Departments retrieved with branch relations",
+                    "200");
             }
             catch (Exception ex)
             {
-                return Response<List<DepartmentDTO>>.Failure($"Failed to retrieve departments: {ex.Message}", "500");
+                return Response<List<DepartmentWithBranchDTO>>.Failure(
+                    $"Failed to retrieve departments: {ex.Message}",
+                    "500");
             }
         }
-        public async Task<Response<List<DepartmentDTO>>> GetAllDepartmentsByUserBranchAsync(int userBranchId)
+        public async Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsByUserBranchAsync(int userBranchId)
         {
             try
             {
                 if (userBranchId <= 0)
-                    return Response<List<DepartmentDTO>>.Failure("Invalid branch ID", "400");
+                    return Response<List<DepartmentWithBranchDTO>>.Failure("Invalid branch ID", "400");
 
                 var departments = await _unitOfWork._Department.GetAllDepartmentsByUserBranchAsync(userBranchId);
 
-                var departmentDTOs = departments.Select(d => new DepartmentDTO
-                {
-                    Id_Department = d.Id_Department,
-                    Name = d.Name,
-                    Description = d.Description,
-                    Branch_Id = d.Branch_Id
-                    // BranchName not included in DTO
-                }).ToList();
+                var departmentDTOs = departments.Select(MapToDTOWithBranch).ToList();
 
-                return Response<List<DepartmentDTO>>.Success(departmentDTOs, $"Retrieved {departmentDTOs.Count} departments for branch");
+                return Response<List<DepartmentWithBranchDTO>>.Success(departmentDTOs, $"Retrieved {departmentDTOs.Count} departments for branch");
             }
             catch (Exception ex)
             {
-                return Response<List<DepartmentDTO>>.Failure($"Failed to retrieve departments: {ex.Message}", "500");
+                return Response<List<DepartmentWithBranchDTO>>.Failure($"Failed to retrieve departments: {ex.Message}", "500");
             }
+        }
+        private DepartmentWithBranchDTO MapToDTOWithBranch(Department department)
+        {
+            return new DepartmentWithBranchDTO
+            {
+                // Base DepartmentDTO properties
+                Id_Department = department.Id_Department,
+                Name = department.Name,
+                Description = department.Description,
+                Branch_Id = department.Branch_Id,
+
+                // Additional branch info
+                BranchName = department.Branch?.Name,
+                BranchAddress = department.Branch?.Address
+            };
         }
         private DepartmentDTO MapToDTO(Department department)
         {
@@ -176,7 +189,7 @@ namespace Application.System.Services.DepartmentServices
                 Id_Department = department.Id_Department,
                 Name = department.Name,
                 Description = department.Description,
-                Branch_Id = department.Branch_Id
+                Branch_Id = department.Branch_Id,
             };
         }
         //private DepartmentDTO MapToDTOWithBranch(Department department)
