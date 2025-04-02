@@ -20,7 +20,7 @@ namespace Application.System.UseCace.BranchUseCase.Implement
             _branchOperation = branchOperation;
         }
 
-        public async Task<Response<BranchDTO>> AddBranchAsync(BranchDTO branchDTO)
+        public async Task<Response<BranchDTO>> CreateBranchAsync(BranchDTO branchDTO)
         {
             try
             {
@@ -31,15 +31,7 @@ namespace Application.System.UseCace.BranchUseCase.Implement
                 if (string.IsNullOrEmpty(branchDTO.Address))
                     return await Response<BranchDTO>.FailureAsync("Address is required", "400");
 
-                // Map DTO to entity
-                var branch = new Branch
-                {
-                    Name = branchDTO.Name,
-                    Address = branchDTO.Address,
-                    City = branchDTO.City,
-                    Phone = branchDTO.Phone,
-                    IsActive = branchDTO.IsActive ?? true
-                };
+                
 
                 var result = await _branchOperation.CreateAsync(branchDTO);
                 return result;

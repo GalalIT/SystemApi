@@ -10,7 +10,7 @@ namespace Application.System.UseCace.BranchUseCase.Interface
 {
     public interface IBranchUseCase
     {
-        Task<Response<BranchDTO>> AddBranchAsync(BranchDTO branchDTO);
+        Task<Response<BranchDTO>> CreateBranchAsync(BranchDTO branchDTO);
         Task<Response<List<BranchDTO>>> GetAllBranchesAsync();
         Task<Response> DeleteBranchAsync(int id);
         Task<Response<BranchDTO>> GetBranchByIdAsync(int id);
