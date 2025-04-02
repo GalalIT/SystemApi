@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.System\Application.System.csproj" />
     <ProjectReference Include="..\Domin.System\Domin.System.csproj" />
   </ItemGroup>
 
