@@ -30,4 +30,13 @@ namespace Application.System.DTO
         public List<int> UnitIds { get; set; }
         public List<decimal> SpecialPrices { get; set; }
     }
+    public class ProductWithDetailsDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public bool IsActive { get; set; }
+        public DepartmentDTO Department { get; set; }
+        public List<ProductUnitDTO> Units { get; set; }
+    }
 }

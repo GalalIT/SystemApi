@@ -14,5 +14,6 @@ namespace Domin.System.IRepository.IProductRepository
         Task<List<Product>> GetAllIncludeToDepartmentAsync();
         Task<List<Product>> GetAllProductsByUserBranchAsync(int userBranchId);
         Task<bool> HasRelatedRecords(int productId);
+        Task<List<Product>> GetAllWithIncludesAsync();
     }
 }

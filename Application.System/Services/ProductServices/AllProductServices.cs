@@ -446,6 +446,49 @@ namespace Application.System.Services.ProductServices
             }
         }
 
+        public async Task<Response<List<ProductWithDetailsDto>>> GetAllWithIncludesAsync()
+        {
+            try
+            {
+                // Get products with all includes from repository
+                var products = await _unitOfWork._Product.GetAllWithIncludesAsync();
+
+                // Map to DTO
+                var result = products.Select(p => new ProductWithDetailsDto
+                {
+                    Id = p.Id_Product,
+                    Name = p.Name,
+                    Price = p.Price,
+                    IsActive = p.IsActive ?? false,
+                    Department = p.Department != null ? new DepartmentDTO
+                    {
+                        Id_Department = p.Department.Id_Department,
+                        Name = p.Department.Name,
+                        Description = p.Department.Description
+                    } : null,
+                    Units = p.ProductUnits?.Select(pu => new ProductUnitDTO
+                    {
+                        Id = pu.Id,
+                        ProductId = pu.ProductId,
+                        UnitId = pu.UnitId,
+                        SpecialPrice = pu.SpecialPrice
+                    }).ToList()
+                }).ToList();
+
+                return Response<List<ProductWithDetailsDto>>.Success(
+                    result,
+                    "Products with complete details retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                //_logger.LogError(ex, "Error retrieving products with details");
+
+                return Response<List<ProductWithDetailsDto>>.Failure(
+                    $"Failed to retrieve product details: {ex.Message}",
+                    "500");
+            }
+        }
         private ProductDTO MapToDTO(Product product)
         {
             return new ProductDTO
@@ -458,6 +501,5 @@ namespace Application.System.Services.ProductServices
             };
         }
 
-        
     }
 }

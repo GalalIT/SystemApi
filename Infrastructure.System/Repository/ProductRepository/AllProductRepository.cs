@@ -26,7 +26,14 @@ namespace Infrastructure.System.Repository.ProductRepository
         var res = await context.Set<Product>().Include(pu => pu.ProductUnits).ThenInclude(p => p.Unit).ToListAsync();
             return res;
         }
-
+        public async Task<List<Product>> GetAllWithIncludesAsync()
+        {
+            return await context.Set<Product>()
+                .Include(p => p.Department)          // Include the Department
+                .Include(p => p.ProductUnits)        // Include the ProductUnits
+                    .ThenInclude(pu => pu.Unit)      // Then include the Unit for each ProductUnit
+                .ToListAsync();
+        }
         public async Task<List<Product>> GetAllProductsByUserBranchAsync(int userBranchId)
         {
            
