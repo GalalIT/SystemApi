@@ -11,6 +11,7 @@ namespace Domin.System.IRepository.IOrderRepository
     public interface IAllOrderRepository : IAllBaseRepository<Order>
     {
         Task<Order> GetOrderWithDetailsAsync(int orderId);
+        Task<bool> AnyOrderDetailsWithProductAsync(int productId);
 
     }
 }

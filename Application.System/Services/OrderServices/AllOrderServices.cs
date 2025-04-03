@@ -185,8 +185,12 @@ namespace Application.System.Services.OrderServices
                 return Response<OrderDTO>.Failure($"Failed to update order: {ex.Message}", "500");
             }
         }
-        
-        
+
+        public async Task<bool> ProductExistsInAnyOrderAsync(int productId)
+        {
+            
+            return await _unitOfWork._Order.AnyOrderDetailsWithProductAsync(productId);
+        }
         private OrderDTO MapToDTO(Order order)
         {
             return new OrderDTO

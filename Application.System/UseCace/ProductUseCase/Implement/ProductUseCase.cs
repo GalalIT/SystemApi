@@ -1,7 +1,10 @@
 ﻿using Application.System.DTO;
+using Application.System.Interface.IOrderOperation;
 using Application.System.Interface.IProductOperation;
 using Application.System.UseCace.ProductUseCase.Interface;
 using Application.System.Utility;
+using Domin.System.Entities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +16,15 @@ namespace Application.System.UseCace.ProductUseCase.Implement
     public class ProductUseCase : IProductUseCase
     {
         private readonly IAllProductOperation _productOperation;
-        // private readonly ILogger<ProductUseCase> _logger; // Uncomment if you have logging
-
-        public ProductUseCase(IAllProductOperation productOperation /*, ILogger<ProductUseCase> logger */)
+         private readonly ILogger<ProductUseCase> _logger; // Uncomment if you have logging
+        private readonly IAllOrderOperation _orderOperation;
+        public ProductUseCase(IAllProductOperation productOperation , 
+            ILogger<ProductUseCase> logger ,
+            IAllOrderOperation orderOperation)
         {
             _productOperation = productOperation;
-            // _logger = logger;
+            _orderOperation = orderOperation;
+            _logger = logger;
         }
         public async Task<Response<ProductDTO>> GetProductByIdAsync(int id)
         {
@@ -36,6 +42,11 @@ namespace Application.System.UseCace.ProductUseCase.Implement
         {
             try
             {
+                if (await _orderOperation.ProductExistsInAnyOrderAsync(id))
+                {
+                    _logger.LogWarning("Attempt to delete product with associated orders: {ProductId}", id);
+                    return Response.Failure("Cannot delete product that exists in orders", "400");
+                }
                 var product = await _productOperation.GetByIdAsync(id);
                 if (!product.Succeeded)
                     return Response.Failure("Product not found", "404");

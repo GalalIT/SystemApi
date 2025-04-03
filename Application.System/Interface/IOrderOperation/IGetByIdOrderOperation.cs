@@ -11,6 +11,8 @@ namespace Application.System.Interface.IOrderOperation
 {
     public interface IGetByIdOrderOperation : IBaseGetByIdAsync<OrderDTO>
     {
+        Task<bool> ProductExistsInAnyOrderAsync(int productId);
+
     }
 }
  

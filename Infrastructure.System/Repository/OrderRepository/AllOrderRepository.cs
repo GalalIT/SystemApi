@@ -29,5 +29,11 @@ namespace Infrastructure.System.Repository.OrderRepository
                 .Include(o => o.applicationUser)
                 .FirstOrDefaultAsync(o => o.Id_Order == orderId);
         }
+        public async Task<bool> AnyOrderDetailsWithProductAsync(int productId)
+        {
+            return await context.orderDetails
+                .Include(od => od.product_Unit)
+                .AnyAsync(od => od.product_Unit.ProductId == productId);
+        }
     }
 }
