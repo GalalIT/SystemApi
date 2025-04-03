@@ -501,5 +501,9 @@ namespace Application.System.Services.ProductServices
             };
         }
 
+        public async Task<bool> AnyProductsInDepartmentAsync(int departmentId)
+        {
+            return await _unitOfWork._Product.AnyAsync(p => p.Department_Id == departmentId);
+        }
     }
 }

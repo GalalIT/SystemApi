@@ -17,5 +17,7 @@ namespace Application.System.UseCace.DepartmentUseCase.Interface
         Task<Response<List<DepartmentDTO>>> GetAllDepartments();
         Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsByUserBranch(int userBranchId);
         Task<Response<List<DepartmentWithBranchDTO>>> GetAllDepartmentsWithBranchInfo();
+        Task<bool> AnyProductsInDepartmentAsync(int departmentId);
+
     }
 }

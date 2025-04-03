@@ -11,6 +11,7 @@ namespace Application.System.Interface.IProductOperation
 {
     public interface IGetByIdProductOperation : IBaseGetByIdAsync<ProductDTO>
     {
+        Task<bool> AnyProductsInDepartmentAsync(int departmentId);
     }
 }
  
