@@ -459,7 +459,7 @@ namespace Application.System.Services.ProductServices
                     Id = p.Id_Product,
                     Name = p.Name,
                     Price = p.Price,
-                    IsActive = p.IsActive ?? false,
+                    IsActive = p.IsActive,
                     Department = p.Department != null ? new DepartmentDTO
                     {
                         Id_Department = p.Department.Id_Department,

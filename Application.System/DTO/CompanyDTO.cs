@@ -11,8 +11,8 @@ namespace Application.System.DTO
         public int Id_Company { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
         public int DiscountRate { get; set; }
     }
 }

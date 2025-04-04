@@ -13,6 +13,6 @@ namespace Application.System.DTO
         public int Quantity { get; set; }
         public decimal Total_Price { get; set; }
         public int Product_Unit_id { get; set; }
-        public int? Order_Id { get; set; }
+        public int Order_Id { get; set; }
     }
 }
