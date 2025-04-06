@@ -12,7 +12,6 @@ namespace Application.System.DTO
         public decimal Total_Amount { get; set; }
         public decimal Total_AmountAfterDiscount { get; set; }
         public decimal Discount { get; set; }
-        public DateTime DateTime_Created { get; set; }
         public string? OrderNumber { get; set; }
         public int OrderType { get; set; }
         public int Branch_Id { get; set; }

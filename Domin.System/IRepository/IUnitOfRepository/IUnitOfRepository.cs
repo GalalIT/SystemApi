@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domin.System.IRepository.IUserRepository;
 
 namespace Domin.System.IRepository.IUnitOfRepository
 {
@@ -25,5 +26,6 @@ namespace Domin.System.IRepository.IUnitOfRepository
         IAllProductRepository _Product { get; }
         IAllUnitRepository _Unit { get; }
         IAllProduct_UnitRepository _ProductUnit { get; }
+        IAllUserRepository _User { get; }
     }
 }

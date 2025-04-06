@@ -44,24 +44,22 @@ namespace Domin.System.Entities
             {
                 yield return new ValidationResult(
                     "من التاريخ مطلوب | From date is required",
-                    new[] { nameof(FromDate) }
-                );
+                    new[] { nameof(FromDate) });
             }
 
             if (ToDate == default)
             {
                 yield return new ValidationResult(
                     "إلى التاريخ مطلوب | To date is required",
-                    new[] { nameof(ToDate) }
-                );
+                    new[] { nameof(ToDate) });
             }
 
-            if (ToDate <= FromDate)
+            // Updated condition to include equal dates
+            if (ToDate <= FromDate)  // Changed from < to <=
             {
                 yield return new ValidationResult(
                     "يجب أن يكون تاريخ الانتهاء بعد تاريخ البداية | To date must be after from date",
-                    new[] { nameof(ToDate) }
-                );
+                    new[] { nameof(ToDate) });
             }
         }
     }

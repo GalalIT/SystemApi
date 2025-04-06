@@ -121,8 +121,7 @@ namespace Application.System.UseCace.OrderUseCase.Implement
                     Total_AmountAfterDiscount = cartDto.PriceAfterDiscount,
                     Discount = cartDto.Discount,
                     OrderNumber = !string.IsNullOrEmpty(cartDto.OrderNumber) ? cartDto.OrderNumber : null,
-                    Company_id = cartDto.CompanyId != 0 ? cartDto.CompanyId : null,
-                    DateTime_Created = DateTime.Now
+                    Company_id = cartDto.CompanyId != 0 ? cartDto.CompanyId : null
                 };
 
                 var orderResult = await _orderService.CreateAsync(orderDto);
@@ -205,8 +204,7 @@ namespace Application.System.UseCace.OrderUseCase.Implement
                     Total_AmountAfterDiscount = cartDto.PriceAfterDiscount,
                     Discount = cartDto.Discount,
                     OrderNumber = !string.IsNullOrEmpty(cartDto.OrderNumber) ? cartDto.OrderNumber : null,
-                    Company_id = cartDto.CompanyId != 0 ? cartDto.CompanyId : null,
-                    DateTime_Created = existingOrderResponse.Data.OrderDate // Keep original creation date
+                    Company_id = cartDto.CompanyId != 0 ? cartDto.CompanyId : null
                 };
 
                 // Update the order

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.System.Repository.UserRepository
 {
-    public class UserRepository : IUserRepository
+    public class AllUserRepository : IAllUserRepository
     {
         private readonly AppDbContext context;
 
-        public UserRepository(AppDbContext context)
+        public AllUserRepository(AppDbContext context)
         {
             this.context = context;
         }

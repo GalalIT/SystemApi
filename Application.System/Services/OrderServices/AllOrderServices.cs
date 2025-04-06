@@ -57,7 +57,6 @@ namespace Application.System.Services.OrderServices
                     Total_Amount = orderDTO.Total_Amount,
                     Total_AmountAfterDiscount = orderDTO.Total_AmountAfterDiscount,
                     Discount = orderDTO.Discount,
-                    DateTime_Created = orderDTO.DateTime_Created,
                     OrderNumber = orderDTO.OrderNumber,
                     OrderType = orderDTO.OrderType,
                     Branch_Id = orderDTO.Branch_Id,
@@ -170,7 +169,6 @@ namespace Application.System.Services.OrderServices
                 order.Total_Amount = orderDTO.Total_Amount;
                 order.Total_AmountAfterDiscount = orderDTO.Total_AmountAfterDiscount;
                 order.Discount = orderDTO.Discount;
-                order.DateTime_Created = orderDTO.DateTime_Created;
                 order.OrderNumber = orderDTO.OrderNumber;
                 order.OrderType = orderDTO.OrderType;
                 order.Branch_Id = orderDTO.Branch_Id;
@@ -199,7 +197,6 @@ namespace Application.System.Services.OrderServices
                 Total_Amount = order.Total_Amount,
                 Total_AmountAfterDiscount = order.Total_AmountAfterDiscount,
                 Discount = order.Discount,
-                DateTime_Created = order.DateTime_Created,
                 OrderNumber = order.OrderNumber,
                 OrderType = order.OrderType,
                 Branch_Id = order.Branch_Id,

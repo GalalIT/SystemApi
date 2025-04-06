@@ -22,7 +22,7 @@ namespace Infrastructure.System.Repository.UnitRepository
         public async Task<List<Unit>> GetAllUnitsByBranch(int branchId)
         {
             // Directly filter units by branch
-            return await context.units
+            return await context.units.Include(pu => pu.Branch)
                 .Where(u => u.Branch_Id == branchId)
                 .ToListAsync();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domin.System.IRepository.IUserRepository
 {
-    public interface IUserRepository
+    public interface IAllUserRepository
     {
         Task<int> GetUserBranchIdAsync(string userId);
     }

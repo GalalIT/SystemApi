@@ -460,11 +460,15 @@ namespace Application.System.Services.ProductServices
                     Name = p.Name,
                     Price = p.Price,
                     IsActive = p.IsActive,
-                    Department = p.Department != null ? new DepartmentDTO
+                    Department = p.Department != null ? new DepartmentWithBranchDTO
                     {
                         Id_Department = p.Department.Id_Department,
                         Name = p.Department.Name,
-                        Description = p.Department.Description
+                        Description = p.Department.Description,
+                        Branch_Id=p.Department.Branch_Id,
+                        BranchName = p.Department.Branch.Name,
+
+
                     } : null,
                     Units = p.ProductUnits?.Select(pu => new ProductUnitDTO
                     {

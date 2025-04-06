@@ -13,8 +13,8 @@ namespace Application.System.UseCace.UnitUseCase.Interface
         Task<Response<UnitDTO>> CreateUnitAsync(UnitDTO unitDTO);
         Task<Response> DeleteUnitAsync(int id);
         Task<Response<List<UnitDTO>>> GetAllUnitsAsync();
-        Task<Response<List<UnitDTO>>> GetAllUnitsIncludeToBranchAsync();
-        Task<Response<List<UnitDTO>>> GetAllUnitsByBranchAsync(int branchId);
+        Task<Response<List<UnitWithBranchNameDTO>>> GetAllUnitsIncludeToBranchAsync();
+        Task<Response<List<UnitWithBranchNameDTO>>> GetAllUnitsByBranchAsync(int branchId);
         Task<Response<UnitDTO>> GetUnitByIdAsync(int id);
         Task<Response<UnitDTO>> UpdateUnitAsync(UnitDTO unitDTO);
     }

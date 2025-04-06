@@ -8,6 +8,7 @@ using Domin.System.IRepository.IProduct_UnitRepository;
 using Domin.System.IRepository.IProductRepository;
 using Domin.System.IRepository.IUnitOfRepository;
 using Domin.System.IRepository.IUnitRepository;
+using Domin.System.IRepository.IUserRepository;
 using Infrastructure.System.Data;
 using Infrastructure.System.Repository.BranchRepository;
 using Infrastructure.System.Repository.CompanyRepository;
@@ -17,6 +18,7 @@ using Infrastructure.System.Repository.OrderRepository;
 using Infrastructure.System.Repository.Product_UnitRepository;
 using Infrastructure.System.Repository.ProductRepository;
 using Infrastructure.System.Repository.UnitRepository;
+using Infrastructure.System.Repository.UserRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +45,7 @@ namespace Infrastructure.System.Repository.UnitOfRepository
         public IAllUnitRepository _Unit { get; private set; }
 
         public IAllProduct_UnitRepository _ProductUnit { get; private set; }
+        public IAllUserRepository _User { get; private set; }
 
         public UnitOfRepository(AppDbContext context)
         {
@@ -55,6 +58,7 @@ namespace Infrastructure.System.Repository.UnitOfRepository
             _Product = new AllProductRepository(context);
             _Unit = new AllUnitRepository(context);
             _ProductUnit = new AllProduct_UnitRepository(context);
+            _User = new AllUserRepository(context);
         }
     }
 }

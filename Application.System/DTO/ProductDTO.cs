@@ -36,7 +36,7 @@ namespace Application.System.DTO
         public string Name { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
-        public DepartmentDTO Department { get; set; }
+        public DepartmentWithBranchDTO Department { get; set; }
         public List<ProductUnitDTO> Units { get; set; }
     }
 }

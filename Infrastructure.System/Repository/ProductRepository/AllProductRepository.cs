@@ -30,6 +30,7 @@ namespace Infrastructure.System.Repository.ProductRepository
         {
             return await context.Set<Product>()
                 .Include(p => p.Department)          // Include the Department
+                    .ThenInclude(br => br.Branch)
                 .Include(p => p.ProductUnits)        // Include the ProductUnits
                     .ThenInclude(pu => pu.Unit)      // Then include the Unit for each ProductUnit
                 .ToListAsync();

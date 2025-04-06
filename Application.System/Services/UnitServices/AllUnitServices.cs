@@ -90,31 +90,31 @@ namespace Application.System.Services.UnitServices
             }
         }
 
-        public async Task<Response<List<UnitDTO>>> GetAllIncludeToBranchAsync()
+        public async Task<Response<List<UnitWithBranchNameDTO>>> GetAllIncludeToBranchAsync()
         {
             try
             {
                 var units = await _unitOfWork._Unit.GetAllIncludeToBranchAsync();
-                var unitDTOs = units.Select(MapToDTO).ToList();
-                return Response<List<UnitDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
+                var unitDTOs = units.Select(MapBranchToDTO).ToList();
+                return Response<List<UnitWithBranchNameDTO>>.Success(unitDTOs, "All units with branch information retrieved successfully");
             }
             catch (Exception ex)
             {
-                return Response<List<UnitDTO>>.Failure($"Failed to retrieve units with branch details: {ex.Message}", "500");
+                return Response<List<UnitWithBranchNameDTO>>.Failure($"Failed to retrieve units with branch details: {ex.Message}", "500");
             }
         }
 
-        public async Task<Response<List<UnitDTO>>> GetAllUnitsByBranch(int branchId)
+        public async Task<Response<List<UnitWithBranchNameDTO>>> GetAllUnitsByBranch(int branchId)
         {
             try
             {
                 var units = await _unitOfWork._Unit.GetAllUnitsByBranch(branchId);
-                var unitDTOs = units.Select(MapToDTO).ToList();
-                return Response<List<UnitDTO>>.Success(unitDTOs, "Units retrieved successfully");
+                var unitDTOs = units.Select(MapBranchToDTO).ToList();
+                return Response<List<UnitWithBranchNameDTO>>.Success(unitDTOs, "Units retrieved successfully");
             }
             catch (Exception ex)
             {
-                return Response<List<UnitDTO>>.Failure($"Failed to retrieve units: {ex.Message}", "500");
+                return Response<List<UnitWithBranchNameDTO>>.Failure($"Failed to retrieve units: {ex.Message}", "500");
             }
         }
 
@@ -163,6 +163,16 @@ namespace Application.System.Services.UnitServices
         private UnitDTO MapToDTO(Unit unit)
         {
             return new UnitDTO
+            {
+                Id_Unit = unit.Id_Unit,       // Map the Unit ID
+                Name = unit.Name,             // Map the Unit name
+                Branch_Id = unit.Branch_Id,   // Map the Branch ID
+                //BranchName = unit.Branch?.Name // Map the Branch name (if Branch is included)
+            };
+        }
+        private UnitWithBranchNameDTO MapBranchToDTO(Unit unit)
+        {
+            return new UnitWithBranchNameDTO
             {
                 Id_Unit = unit.Id_Unit,       // Map the Unit ID
                 Name = unit.Name,             // Map the Unit name

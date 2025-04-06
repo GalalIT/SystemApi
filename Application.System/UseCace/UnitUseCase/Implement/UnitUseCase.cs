@@ -66,7 +66,7 @@ namespace Application.System.UseCace.UnitUseCase.Implement
             }
         }
 
-        public async Task<Response<List<UnitDTO>>> GetAllUnitsIncludeToBranchAsync()
+        public async Task<Response<List<UnitWithBranchNameDTO>>> GetAllUnitsIncludeToBranchAsync()
         {
             try
             {
@@ -74,24 +74,24 @@ namespace Application.System.UseCace.UnitUseCase.Implement
             }
             catch (Exception ex)
             {
-                return Response<List<UnitDTO>>.Failure(
+                return Response<List<UnitWithBranchNameDTO>>.Failure(
                     $"Failed to retrieve units with branch details: {ex.Message}",
                     "500");
             }
         }
 
-        public async Task<Response<List<UnitDTO>>> GetAllUnitsByBranchAsync(int branchId)
+        public async Task<Response<List<UnitWithBranchNameDTO>>> GetAllUnitsByBranchAsync(int branchId)
         {
             try
             {
                 if (branchId <= 0)
-                    return Response<List<UnitDTO>>.Failure("Invalid branch ID", "400");
+                    return Response<List<UnitWithBranchNameDTO>>.Failure("Invalid branch ID", "400");
 
                 return await _unitOperation.GetAllUnitsByBranch(branchId);
             }
             catch (Exception ex)
             {
-                return Response<List<UnitDTO>>.Failure(
+                return Response<List<UnitWithBranchNameDTO>>.Failure(
                     $"Failed to retrieve units by branch: {ex.Message}",
                     "500");
             }

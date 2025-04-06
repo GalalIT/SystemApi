@@ -12,6 +12,11 @@ namespace Application.System.DTO
         public int Id_Unit { get; set; }
         public string Name { get; set; }
         public int Branch_Id { get; set; }
+        //public string BranchName { get; set; }
+
+    }
+    public class UnitWithBranchNameDTO : UnitDTO
+    {
         public string BranchName { get; set; }
 
     }

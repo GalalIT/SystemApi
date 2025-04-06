@@ -71,7 +71,7 @@ namespace Presentation.SystemApi.Controllers
         }
 
         [HttpGet("with-branches")]
-        public async Task<ActionResult<Response<List<UnitDTO>>>> GetAllUnitsWithBranches()
+        public async Task<ActionResult<Response<List<UnitWithBranchNameDTO>>>> GetAllUnitsWithBranches()
         {
             try
             {
@@ -81,17 +81,17 @@ namespace Presentation.SystemApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting units with branch details");
-                return StatusCode(500, Response<List<UnitDTO>>.Failure("Internal server error", "500"));
+                return StatusCode(500, Response<List<UnitWithBranchNameDTO>>.Failure("Internal server error", "500"));
             }
         }
 
         [HttpGet("branch/{branchId}")]
-        public async Task<ActionResult<Response<List<UnitDTO>>>> GetUnitsByBranch(int branchId)
+        public async Task<ActionResult<Response<List<UnitWithBranchNameDTO>>>> GetUnitsByBranch(int branchId)
         {
             try
             {
                 if (branchId <= 0)
-                    return BadRequest(Response<List<UnitDTO>>.Failure("Invalid branch ID", "400"));
+                    return BadRequest(Response<List<UnitWithBranchNameDTO>>.Failure("Invalid branch ID", "400"));
 
                 var result = await _unitUseCase.GetAllUnitsByBranchAsync(branchId);
                 return StatusCode(int.Parse(result.Status), result);
@@ -99,7 +99,7 @@ namespace Presentation.SystemApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting units for branch {branchId}");
-                return StatusCode(500, Response<List<UnitDTO>>.Failure("Internal server error", "500"));
+                return StatusCode(500, Response<List<UnitWithBranchNameDTO>>.Failure("Internal server error", "500"));
             }
         }
 

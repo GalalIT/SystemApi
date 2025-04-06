@@ -32,5 +32,7 @@ namespace Domin.System.Entities
         [ForeignKey(nameof(Branch_Id))]
         [Display(Name = "تفاصيل الفرع", Description = "Branch Details")]
         public virtual Branch? Branch { get; set; }
+        [Display(Name = "منتجات القسم", Description = "Department Products")]
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

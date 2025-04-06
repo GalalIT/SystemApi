@@ -19,48 +19,18 @@ namespace Presentation.SystemApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Response<ProductDTO>>> GetProductById(int id)
+        [HttpPost]
+        public async Task<ActionResult<Response<ProductDTO>>> CreateProduct([FromBody] CreateProductWithUnitsDTO productDto)
         {
             try
             {
-                var result = await _productUseCase.GetProductByIdAsync(id);
+                var result = await _productUseCase.CreateProductWithUnitsAsync(productDto);
                 return StatusCode(int.Parse(result.Status), result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error getting product {id}");
+                _logger.LogError(ex, "Error creating product");
                 return StatusCode(500, Response<ProductDTO>.Failure("Internal server error", "500"));
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Response>> DeleteProduct(int id)
-        {
-            try
-            {
-                var result = await _productUseCase.DeleteProductsAsync(id);
-                return StatusCode(int.Parse(result.Status), result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error deleting product {id}");
-                return StatusCode(500, Response<int>.Failure("Internal server error", "500"));
-            }
-        }
-
-        [HttpGet("branch/{userBranchId}")]
-        public async Task<ActionResult<Response<ProductBranchResponse>>> GetProductsByBranch(int userBranchId, [FromQuery] int? departmentId)
-        {
-            try
-            {
-                var result = await _productUseCase.GetProductsByBranchWithDepartments(userBranchId, departmentId);
-                return StatusCode(int.Parse(result.Status), result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error getting products for branch {userBranchId}");
-                return StatusCode(500, Response<ProductBranchResponse>.Failure("Internal server error", "500"));
             }
         }
 
@@ -82,18 +52,48 @@ namespace Presentation.SystemApi.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Response<ProductDTO>>> CreateProduct([FromBody] CreateProductWithUnitsDTO productDto)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Response>> DeleteProduct(int id)
         {
             try
             {
-                var result = await _productUseCase.CreateProductWithUnitsAsync(productDto);
+                var result = await _productUseCase.DeleteProductsAsync(id);
                 return StatusCode(int.Parse(result.Status), result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating product");
+                _logger.LogError(ex, $"Error deleting product {id}");
+                return StatusCode(500, Response<int>.Failure("Internal server error", "500"));
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Response<ProductDTO>>> GetProductById(int id)
+        {
+            try
+            {
+                var result = await _productUseCase.GetProductByIdAsync(id);
+                return StatusCode(int.Parse(result.Status), result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting product {id}");
                 return StatusCode(500, Response<ProductDTO>.Failure("Internal server error", "500"));
+            }
+        }
+
+        [HttpGet("branch/{userBranchId}")]
+        public async Task<ActionResult<Response<ProductBranchResponse>>> GetProductsByBranch(int userBranchId, [FromQuery] int? departmentId)
+        {
+            try
+            {
+                var result = await _productUseCase.GetProductsByBranchWithDepartments(userBranchId, departmentId);
+                return StatusCode(int.Parse(result.Status), result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting products for branch {userBranchId}");
+                return StatusCode(500, Response<ProductBranchResponse>.Failure("Internal server error", "500"));
             }
         }
 
