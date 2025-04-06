@@ -272,6 +272,7 @@ namespace Application.System.Tests.Interface
             Assert.True(result.Succeeded);
             Assert.Equal(null, result.Data.Description_product);
         }
+
         #endregion
     }
 }
