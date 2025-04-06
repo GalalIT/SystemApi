@@ -11,7 +11,7 @@ namespace Application.System.Interface.IOrderDetailsOperation
 {
     public interface IAddOrderDetailsOperation : IBaseCreateAsync<OrderDetailsDTO>
     {
-        Task<OrderDetails> AddAsync(OrderDetails entity);
+        //Task<OrderDetailsDTO> AddAsync(OrderDetailsDTO entity);
     }
 }
   

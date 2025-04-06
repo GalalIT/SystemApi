@@ -20,11 +20,11 @@ namespace Application.System.Services.OrderDetailsServices
             _unitOfWork = unitOfRepository;
         }
 
-        public async Task<OrderDetails> AddAsync(OrderDetails entity)
-        {
-            await _unitOfWork._OrderDetails.AddAsync(entity);
-            return entity;
-        }
+        //public async Task<OrderDetailsDTO> AddAsync(OrderDetailsDTO entity)
+        //{
+        //    await _unitOfWork._OrderDetails.AddAsync(entity);
+        //    return entity;
+        //}
 
         public async Task<Response<OrderDetailsDTO>> CreateAsync(OrderDetailsDTO orderDetailsDTO)
         {
