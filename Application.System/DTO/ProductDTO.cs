@@ -39,4 +39,14 @@ namespace Application.System.DTO
         public DepartmentWithBranchDTO Department { get; set; }
         public List<ProductUnitDTO> Units { get; set; }
     }
+    public class ProductWithUnitsDto
+    {
+        public int Id_Product { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public int Department_Id { get; set; }
+        public int Unit_Id { get; set; }
+        public string Unit_Name { get; set; }
+        public decimal SpecialPrice { get; set; }
+    }
 }

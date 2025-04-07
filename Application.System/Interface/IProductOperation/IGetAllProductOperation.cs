@@ -12,9 +12,9 @@ namespace Application.System.Interface.IProductOperation
 {
     public interface IGetAllProductOperation : IBaseGetAllAsync<ProductDTO>
     {
-        Task<Response<List<Product>>> GetAllIncludeToUnitAsync();
-        Task<Response<List<Product>>> GetAllIncludeToDepartmentAsync();
-        Task<Response<List<Product>>> GetAllProductsByUserBranchAsync(int userBranchId);
+        Task<Response<List<ProductWithUnitsDto>>> GetAllIncludeToUnitAsync();
+        Task<Response<List<ProductDTO>>> GetAllIncludeToDepartmentAsync();
+        Task<Response<List<ProductWithUnitsDto>>> GetAllProductsByUserBranchAsync(int userBranchId);
         Task<Response<ProductBranchResponse>> GetProductsByBranchWithDepartments(int userBranchId, int? departmentId);
         Task<Response<List<ProductWithDetailsDto>>> GetAllWithIncludesAsync();
     }

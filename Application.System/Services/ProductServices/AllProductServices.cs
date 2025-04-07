@@ -340,45 +340,80 @@ namespace Application.System.Services.ProductServices
             }
         }
 
-        public async Task<Response<List<Product>>> GetAllIncludeToDepartmentAsync()
+        public async Task<Response<List<ProductDTO>>> GetAllIncludeToDepartmentAsync()
         {
             try
             {
                 var products = await _unitOfWork._Product.GetAllIncludeToDepartmentAsync();
-                return Response<List<Product>>.Success(products, "Products with department details retrieved");
+        
+                // Map Product entities to ProductDTO
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    Id_Product = p.Id_Product,
+                    Name = p.Name,
+                    Department_Id = p.Department_Id,
+                    DepartmentName = p.Department?.Name, // Include department name
+                    Price = p.Price,
+                    IsActive = p.IsActive
+                }).ToList();
+
+                return Response<List<ProductDTO>>.Success(productDtos, "Products with department details retrieved");
             }
             catch (Exception ex)
             {
-                return Response<List<Product>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
+                return Response<List<ProductDTO>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
 
-        public async Task<Response<List<Product>>> GetAllIncludeToUnitAsync()
+        public async Task<Response<List<ProductWithUnitsDto>>> GetAllIncludeToUnitAsync()
         {
             try
             {
                 var products = await _unitOfWork._Product.GetAllIncludeToUnitAsync();
-                return Response<List<Product>>.Success(products, "Products with unit details retrieved");
+
+                var result = products.SelectMany(p => p.ProductUnits.Select(pu => new ProductWithUnitsDto
+                {
+                    Id_Product = p.Id_Product,
+                    Name = p.Name,
+                    Department_Id = p.Department_Id,
+                    Unit_Id = pu.UnitId,
+                    Unit_Name = pu.Unit?.Name,
+                    SpecialPrice = pu.SpecialPrice
+                })).ToList();
+
+                return Response<List<ProductWithUnitsDto>>.Success(result);
             }
             catch (Exception ex)
             {
-                return Response<List<Product>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
+                return Response<List<ProductWithUnitsDto>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
 
-        public async Task<Response<List<Product>>> GetAllProductsByUserBranchAsync(int userBranchId)
+        public async Task<Response<List<ProductWithUnitsDto>>> GetAllProductsByUserBranchAsync(int userBranchId)
         {
             try
             {
                 if (userBranchId <= 0)
-                    return Response<List<Product>>.Failure("Invalid branch ID", "400");
+                    return Response<List<ProductWithUnitsDto>>.Failure("Invalid branch ID", "400");
 
                 var products = await _unitOfWork._Product.GetAllProductsByUserBranchAsync(userBranchId);
-                return Response<List<Product>>.Success(products, $"Products for branch {userBranchId} retrieved");
+
+                // Map each product and its units to ProductWithUnitsDto
+                var result = products.SelectMany(p => p.ProductUnits.Select(pu => new ProductWithUnitsDto
+                {
+                    Id_Product = p.Id_Product,
+                    Name = p.Name,
+                    Department_Id = p.Department_Id,
+                    Unit_Id = pu.UnitId,
+                    Unit_Name = pu.Unit?.Name,
+                    SpecialPrice = pu.SpecialPrice
+                })).ToList();
+
+                return Response<List<ProductWithUnitsDto>>.Success(result, $"Products for branch {userBranchId} retrieved");
             }
             catch (Exception ex)
             {
-                return Response<List<Product>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
+                return Response<List<ProductWithUnitsDto>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
 

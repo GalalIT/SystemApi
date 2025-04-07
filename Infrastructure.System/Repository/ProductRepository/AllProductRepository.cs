@@ -49,9 +49,9 @@ namespace Infrastructure.System.Repository.ProductRepository
 
             // Fetch products that belong to the user's branch
             var res = await context.Set<Product>()
-                                   .Where(p => p.Department.Branch_Id == userBranchId)
                                    .Include(p => p.Department)
                                    .Include(p => p.ProductUnits).ThenInclude(pu => pu.Unit)
+                                   .Where(p => p.Department.Branch_Id == userBranchId)
                                    .ToListAsync();
 
             Console.WriteLine($"Products found: {res.Count}");
