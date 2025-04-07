@@ -267,8 +267,6 @@ namespace Application.System.Services.ProductServices
                 return Response<ProductBranchResponse>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
-
-
         public async Task<Response<ProductDTO>> CreateAsync(ProductDTO productDTO)
         {
             try
@@ -325,7 +323,6 @@ namespace Application.System.Services.ProductServices
                 return Response.Failure($"Failed to delete product: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<List<ProductDTO>>> GetAllAsync()
         {
             try
@@ -339,7 +336,6 @@ namespace Application.System.Services.ProductServices
                 return Response<List<ProductDTO>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<List<ProductDTO>>> GetAllIncludeToDepartmentAsync()
         {
             try
@@ -364,7 +360,6 @@ namespace Application.System.Services.ProductServices
                 return Response<List<ProductDTO>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<List<ProductWithUnitsDto>>> GetAllIncludeToUnitAsync()
         {
             try
@@ -388,7 +383,6 @@ namespace Application.System.Services.ProductServices
                 return Response<List<ProductWithUnitsDto>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<List<ProductWithUnitsDto>>> GetAllProductsByUserBranchAsync(int userBranchId)
         {
             try
@@ -416,7 +410,6 @@ namespace Application.System.Services.ProductServices
                 return Response<List<ProductWithUnitsDto>>.Failure($"Failed to retrieve products: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<ProductDTO>> GetByIdAsync(int id)
         {
             try
@@ -432,7 +425,6 @@ namespace Application.System.Services.ProductServices
                 return Response<ProductDTO>.Failure($"Failed to retrieve product: {ex.Message}", "500");
             }
         }
-
         public async Task<bool> HasRelatedRecords(int productId)
         {
             try
@@ -447,7 +439,6 @@ namespace Application.System.Services.ProductServices
                 return true;
             }
         }
-
         public async Task<Response<ProductDTO>> UpdateAsync(ProductDTO productDTO)
         {
             try
@@ -480,7 +471,6 @@ namespace Application.System.Services.ProductServices
                 return Response<ProductDTO>.Failure($"Failed to update product: {ex.Message}", "500");
             }
         }
-
         public async Task<Response<List<ProductWithDetailsDto>>> GetAllWithIncludesAsync()
         {
             try
@@ -539,10 +529,10 @@ namespace Application.System.Services.ProductServices
                 IsActive = product.IsActive
             };
         }
-
         public async Task<bool> AnyProductsInDepartmentAsync(int departmentId)
         {
             return await _unitOfWork._Product.AnyAsync(p => p.Department_Id == departmentId);
         }
+
     }
 }
