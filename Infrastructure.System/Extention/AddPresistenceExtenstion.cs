@@ -43,8 +43,19 @@ namespace Infrastructure.System.Extention
     {
         public static IServiceCollection AddPresistence(this IServiceCollection services, IConfiguration configuration)
         {
+            if(configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException("Database connection string 'DefaultConnection' is missing or empty");
+            }
+
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             //////////////////////////////////////////Difine the UseCase ////////////////////
 
 
