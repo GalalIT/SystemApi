@@ -19,6 +19,7 @@ using Infrastructure.System.Repository.Product_UnitRepository;
 using Infrastructure.System.Repository.ProductRepository;
 using Infrastructure.System.Repository.UnitRepository;
 using Infrastructure.System.Repository.UserRepository;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace Infrastructure.System.Repository.UnitOfRepository
     public class UnitOfRepository : IUnitOfRepository
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public IAllBranchRepository _Branch { get; private set; }
 
@@ -58,7 +60,8 @@ namespace Infrastructure.System.Repository.UnitOfRepository
             _Product = new AllProductRepository(context);
             _Unit = new AllUnitRepository(context);
             _ProductUnit = new AllProduct_UnitRepository(context);
-            _User = new AllUserRepository(context);
+            _User = new AllUserRepository(userManager, context); // Now passing both parameters
+
         }
     }
 }

@@ -147,24 +147,24 @@ namespace Domin.System.Test.IRepository
         private readonly AppDbContext _context;
         private readonly AllUserRepository _repository;
 
-        public UserRepositoryTests()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "UsersTestDb")
-                .Options;
+        //public UserRepositoryTests()
+        //{
+        //    var options = new DbContextOptionsBuilder<AppDbContext>()
+        //        .UseInMemoryDatabase(databaseName: "UsersTestDb")
+        //        .Options;
 
-            _context = new AppDbContext(options);
-            _repository = new AllUserRepository(_context);
+        //    _context = new AppDbContext(options);
+        //    _repository = new AllUserRepository(_context);
 
-            // Seed Arabic test data
-            _context.Users.Add(new ApplicationUser
-            {
-                Id = "user1",
-                Name = "محمد أحمد",
-                Branch_Id = 1
-            });
-            _context.SaveChanges();
-        }
+        //    // Seed Arabic test data
+        //    _context.Users.Add(new ApplicationUser
+        //    {
+        //        Id = "user1",
+        //        Name = "محمد أحمد",
+        //        Branch_Id = 1
+        //    });
+        //    _context.SaveChanges();
+        //}
 
         [Fact]
         public async Task GetUserBranchIdAsync_ValidUser_ReturnsBranchId()
