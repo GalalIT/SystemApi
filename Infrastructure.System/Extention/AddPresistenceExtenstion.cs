@@ -27,14 +27,18 @@ using Application.System.UseCace.ProductUseCase.Implement;
 using Application.System.UseCace.ProductUseCase.Interface;
 using Application.System.UseCace.UnitUseCase.Implement;
 using Application.System.UseCace.UnitUseCase.Interface;
+using Domin.System.Entities;
 using Domin.System.IRepository.IProduct_UnitRepository;
 using Domin.System.IRepository.IUnitOfRepository;
 using Infrastructure.System.Data;
 using Infrastructure.System.Repository.Product_UnitRepository;
 using Infrastructure.System.Repository.UnitOfRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 namespace Infrastructure.System.Extention
@@ -43,7 +47,8 @@ namespace Infrastructure.System.Extention
     {
         public static IServiceCollection AddPresistence(this IServiceCollection services, IConfiguration configuration)
         {
-            if(configuration == null)
+            
+            if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
@@ -55,6 +60,20 @@ namespace Infrastructure.System.Extention
             }
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // Customize password requirements
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
             //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             //////////////////////////////////////////Difine the UseCase ////////////////////
 
@@ -76,6 +95,7 @@ namespace Infrastructure.System.Extention
             services.AddScoped<IAllProductOperation, AllProductServices>();
             services.AddScoped<IAllUnitOperation, AllUnitServices>();
             services.AddScoped<IAllProduct_UnitOperation, AllProduct_UnitServices>();
+            //services.AddScoped<IAllUserOperation, AllUserService>();
 
             //////////////////////////////////////////Difine the Repository ////////////////////
             ///

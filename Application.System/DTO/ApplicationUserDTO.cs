@@ -43,6 +43,9 @@ namespace Application.System.DTO
         [Range(1, int.MaxValue, ErrorMessage = "معرف الفرع غير صالح | Invalid branch ID")]
         [Display(Name = "الفرع", Description = "Branch")]
         public int Branch_Id { get; set; }
+
+
+        public List<string>? Roles { get; set; }
     }
     public class UpdateUserDto
     {
@@ -112,6 +115,11 @@ namespace Application.System.DTO
         public string UserName { get; set; } = string.Empty;
         public byte[]? ProfilePicture { get; set; }
         public bool IsActive { get; set; }
+        public string? PhonNumber { get; set; }
+        public bool TowFactorEnable { get; set; }
+        public bool PhonNumberConfirm { get; set; }
+        public bool AccessFailedCount { get; set; }
+        public string[]? Roles { get; set; }
         public int Branch_Id { get; set; }
         public BranchUserDto? Branch { get; set; }
     }
