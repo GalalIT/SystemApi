@@ -8,6 +8,7 @@ namespace Application.System.Utility
 {
     public interface IResponse
     {
+        
         string Message { get; set; }
         string Status { get; set; }
         bool Succeeded { get; set; }

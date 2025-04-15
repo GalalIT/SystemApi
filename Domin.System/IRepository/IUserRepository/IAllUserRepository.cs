@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domin.System.IRepository.IUserRepository
 {
-    public interface IAllUserRepository
+    public interface IAllUserRepository: IAllRoleRepository, IAllEmailRepository
     {
         Task<int> GetUserBranchIdAsync(string userId);
         Task<ApplicationUser> GetByIdAsync(string id);
@@ -25,6 +25,10 @@ namespace Domin.System.IRepository.IUserRepository
         Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword);
         Task<IdentityResult> UpdateProfilePictureAsync(string userId, byte[] profilePicture);
         Task<IdentityResult> ToggleUserStatusAsync(string userId, bool isActive);
+        Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
+
+        
+        
     }
 
 }

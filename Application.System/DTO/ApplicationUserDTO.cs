@@ -28,9 +28,9 @@ namespace Application.System.DTO
         [Display(Name = "البريد الإلكتروني", Description = "Email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "اسم المستخدم مطلوب | Username is required")]
-        [Display(Name = "اسم الدخول", Description = "Username")]
-        public string UserName { get; set; } = string.Empty;
+        //[Required(ErrorMessage = "اسم المستخدم مطلوب | Username is required")]
+        //[Display(Name = "اسم الدخول", Description = "Username")]
+        //public string UserName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "كلمة المرور مطلوبة | Password is required")]
         [DataType(DataType.Password)]
@@ -118,7 +118,7 @@ namespace Application.System.DTO
         public string? PhonNumber { get; set; }
         public bool TowFactorEnable { get; set; }
         public bool PhonNumberConfirm { get; set; }
-        public bool AccessFailedCount { get; set; }
+        public int AccessFailedCount { get; set; }
         public string[]? Roles { get; set; }
         public int Branch_Id { get; set; }
         public BranchUserDto? Branch { get; set; }
@@ -142,5 +142,55 @@ namespace Application.System.DTO
 
         [Display(Name = "تذكرني", Description = "Remember Me")]
         public bool RememberMe { get; set; }
+    }
+    public class LoginResponse
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; } // Optional
+        public DateTime ExpiresAt { get; set; }
+        public UserInfoDto UserInfo { get; set; }
+    }
+    public class UserInfoDto
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string[] Roles { get; set; }
+        public BranchUserDto Branch { get; set; }
+    }
+    public class ConfirmEmailRequestDto
+    {
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        public string Token { get; set; }
+    }
+
+    public class ConfirmEmailResponseDto
+    {
+        public bool Success { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+    }
+    public class LoginResponseDto
+    {
+        public string Token { get; set; }          // Access token
+        public string RefreshToken { get; set; }   // New property
+        public string UserId { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+        public IList<string> Roles { get; set; }
+        public DateTime TokenExpiry { get; set; }  // Recommended addition
+    }
+    public class AuthResponseDTO
+    {
+        public string? Token { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; }
+        public string? Message { get; set; }
+        public string? UserId { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public IEnumerable<string>? Roles { get; set; }
     }
 }

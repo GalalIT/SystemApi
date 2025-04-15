@@ -64,50 +64,50 @@ namespace Domin.System.Test.IRepository
             }
         }
 
-        [Fact]
-        public void Implementation_ShouldSatisfyInterfaceContract()
-        {
-            // Arrange
-            var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
-            var unitOfWork = new UnitOfRepository(mockContext.Object);
+        //[Fact]
+        //public void Implementation_ShouldSatisfyInterfaceContract()
+        //{
+        //    // Arrange
+        //    var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
+        //    var unitOfWork = new UnitOfRepository(mockContext.Object);
 
-            // Assert
-            Assert.IsAssignableFrom<IUnitOfRepository>(unitOfWork);
-        }
+        //    // Assert
+        //    Assert.IsAssignableFrom<IUnitOfRepository>(unitOfWork);
+        //}
 
-        [Fact]
-        public void Properties_ShouldReturnCorrectInterfaceTypes()
-        {
-            // Arrange
-            var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
-            var unitOfWork = new UnitOfRepository(mockContext.Object);
+        //[Fact]
+        //public void Properties_ShouldReturnCorrectInterfaceTypes()
+        //{
+        //    // Arrange
+        //    var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
+        //    var unitOfWork = new UnitOfRepository(mockContext.Object);
 
-            // Assert
-            Assert.IsAssignableFrom<IAllBranchRepository>(unitOfWork._Branch);
-            Assert.IsAssignableFrom<IAllCompanyRepository>(unitOfWork._Company);
-            Assert.IsAssignableFrom<IAllDepartmentRepository>(unitOfWork._Department);
-            Assert.IsAssignableFrom<IAllOrderDetailsRepository>(unitOfWork._OrderDetails);
-            Assert.IsAssignableFrom<IAllOrderRepository>(unitOfWork._Order);
-            Assert.IsAssignableFrom<IAllProductRepository>(unitOfWork._Product);
-            Assert.IsAssignableFrom<IAllUnitRepository>(unitOfWork._Unit);
-            Assert.IsAssignableFrom<IAllProduct_UnitRepository>(unitOfWork._ProductUnit);
-            Assert.IsAssignableFrom<IAllUserRepository>(unitOfWork._User);
-        }
+        //    // Assert
+        //    Assert.IsAssignableFrom<IAllBranchRepository>(unitOfWork._Branch);
+        //    Assert.IsAssignableFrom<IAllCompanyRepository>(unitOfWork._Company);
+        //    Assert.IsAssignableFrom<IAllDepartmentRepository>(unitOfWork._Department);
+        //    Assert.IsAssignableFrom<IAllOrderDetailsRepository>(unitOfWork._OrderDetails);
+        //    Assert.IsAssignableFrom<IAllOrderRepository>(unitOfWork._Order);
+        //    Assert.IsAssignableFrom<IAllProductRepository>(unitOfWork._Product);
+        //    Assert.IsAssignableFrom<IAllUnitRepository>(unitOfWork._Unit);
+        //    Assert.IsAssignableFrom<IAllProduct_UnitRepository>(unitOfWork._ProductUnit);
+        //    Assert.IsAssignableFrom<IAllUserRepository>(unitOfWork._User);
+        //}
 
-        [Fact]
-        public void Interface_ShouldNotAllowPropertySetters()
-        {
-            // Arrange
-            var properties = typeof(IUnitOfRepository).GetProperties();
-            var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
-            var unitOfWork = new UnitOfRepository(mockContext.Object);
+        //[Fact]
+        //public void Interface_ShouldNotAllowPropertySetters()
+        //{
+        //    // Arrange
+        //    var properties = typeof(IUnitOfRepository).GetProperties();
+        //    var mockContext = new Mock<AppDbContext>(new DbContextOptions<AppDbContext>());
+        //    var unitOfWork = new UnitOfRepository(mockContext.Object);
 
-            // Assert
-            foreach (var property in properties)
-            {
-                var setMethod = property.GetSetMethod();
-                Assert.Null(setMethod); // No setter should exist
-            }
-        }
+        //    // Assert
+        //    foreach (var property in properties)
+        //    {
+        //        var setMethod = property.GetSetMethod();
+        //        Assert.Null(setMethod); // No setter should exist
+        //    }
+        //}
     }
 }

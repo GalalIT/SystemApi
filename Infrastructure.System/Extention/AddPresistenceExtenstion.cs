@@ -7,6 +7,7 @@ using Application.System.Interface.IOrderOperation;
 using Application.System.Interface.IProduct_UnitOperation;
 using Application.System.Interface.IProductOperation;
 using Application.System.Interface.IUnitOperation;
+using Application.System.Interface.IUserOperation;
 using Application.System.Services.BranchServices;
 using Application.System.Services.CompanyServices;
 using Application.System.Services.DepartmentServices;
@@ -15,6 +16,7 @@ using Application.System.Services.OrderServices;
 using Application.System.Services.Product_UnitServices;
 using Application.System.Services.ProductServices;
 using Application.System.Services.UnitServices;
+using Application.System.Services.UserServices;
 using Application.System.UseCace.BranchUseCase.Implement;
 using Application.System.UseCace.BranchUseCase.Interface;
 using Application.System.UseCace.CompanyUseCase.Implement;
@@ -27,6 +29,8 @@ using Application.System.UseCace.ProductUseCase.Implement;
 using Application.System.UseCace.ProductUseCase.Interface;
 using Application.System.UseCace.UnitUseCase.Implement;
 using Application.System.UseCace.UnitUseCase.Interface;
+using Application.System.UseCace.UserUseCases.Implement;
+using Application.System.UseCace.UserUseCases.Interface;
 using Domin.System.Entities;
 using Domin.System.IRepository.IProduct_UnitRepository;
 using Domin.System.IRepository.IUnitOfRepository;
@@ -84,6 +88,7 @@ namespace Infrastructure.System.Extention
             services.AddScoped<IUnitUseCase, UnitUseCase>();
             services.AddScoped<IDepartmentUseCase, DepartmentUseCase>();
             services.AddScoped<IOrderUseCase, OrderUseCase>();
+            services.AddScoped<IUserUseCases, UserUseCases>();
 
             //////////////////////////////////////////Difine the Services ////////////////////
 
@@ -95,6 +100,8 @@ namespace Infrastructure.System.Extention
             services.AddScoped<IAllProductOperation, AllProductServices>();
             services.AddScoped<IAllUnitOperation, AllUnitServices>();
             services.AddScoped<IAllProduct_UnitOperation, AllProduct_UnitServices>();
+            services.AddScoped<IAllUserOperation, AllUserServices>();
+            services.AddScoped<ITokenGenerationOperation, JwtTokenService>();
             //services.AddScoped<IAllUserOperation, AllUserService>();
 
             //////////////////////////////////////////Difine the Repository ////////////////////

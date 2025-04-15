@@ -2,14 +2,18 @@
 using Application.System.Utility;
 using Domin.System.Entities;
 using Domin.System.IRepository.IUnitOfRepository;
+using Infrastructure.System.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Presentation.SystemApi.DTO;
+using Microsoft.Win32;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 
@@ -23,12 +27,14 @@ namespace Presentation.SystemApi.Controllers
         private readonly RoleManager<IdentityRole> _roleManager; // Change here
         private readonly IConfiguration _configuration;
         private readonly IUnitOfRepository _unitOfWork;
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUnitOfRepository unitOfRepository) // Change here
+        private readonly AppDbContext _context;
+        public AccountController(AppDbContext context,UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUnitOfRepository unitOfRepository) // Change here
         {
             _userManager = userManager;
             _configuration = configuration;
             _roleManager = roleManager;
             _unitOfWork = unitOfRepository;
+            _context = context;
         }
 
         [AllowAnonymous]
@@ -42,13 +48,31 @@ namespace Presentation.SystemApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
+            if (existingUser != null)
+            {
+                
+                return Unauthorized(new AuthResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "هذا البريد موجود بالفعل."
+                });
+            }
+            var existingUserByUsername = await _userManager.FindByNameAsync(new MailAddress(registerDto.Email).User);
+            if (existingUserByUsername != null)
+            {
+                return Unauthorized(new AuthResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "اسم المستخدم موجود بالفعل."
+                });
+            }
             var user = new ApplicationUser
             {
                 Email = registerDto.Email,
                 Name = registerDto.Name,
-                UserName = registerDto.Email,
-                Branch_Id= registerDto.Branch_Id
+                UserName=new MailAddress(registerDto.Email).User,
+                Branch_Id = registerDto.Branch_Id
 
             };
 
@@ -58,7 +82,9 @@ namespace Presentation.SystemApi.Controllers
             {
                 return BadRequest(result.Errors);
             }
-
+            
+            // Optionally, send a confirmation email
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             await AssignRolesToUser(user, registerDto.Roles);
 
             return Ok(new AuthResponseDTO
@@ -67,54 +93,57 @@ namespace Presentation.SystemApi.Controllers
                 Message = "Account Created Successfully!"
             });
         }
+        
         [AllowAnonymous]
         [HttpPost("login")]
-public async Task<ActionResult<AuthResponseDTO>> LogIn(LoginDto logInDTO)
-{
-    if (!ModelState.IsValid)
-    {
-        return BadRequest(ModelState);
-    }
-
-    // Try to find the user by email first
-    var user = await _userManager.FindByEmailAsync(logInDTO.UsernameOrEmail);
-
-    // If not found, try by username
-    if (user == null)
-    {
-        user = await _userManager.FindByNameAsync(logInDTO.UsernameOrEmail);
-    }
-
-    if (user == null)
-    {
-        return Unauthorized(new AuthResponseDTO
+        public async Task<ActionResult<AuthResponseDTO>> LogIn(LoginDto logInDTO)
         {
-            IsSuccess = false,
-            Message = "User not found with this email or username."
-        });
-    }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-    var isPasswordValid = await _userManager.CheckPasswordAsync(user, logInDTO.Password);
+            if (string.IsNullOrWhiteSpace(logInDTO.UsernameOrEmail) || string.IsNullOrWhiteSpace(logInDTO.Password))
+            {
+                return BadRequest(new AuthResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "Username/email and password are required."
+                });
+            }
 
-    if (!isPasswordValid)
-    {
-        return Unauthorized(new AuthResponseDTO
-        {
-            IsSuccess = false,
-            Message = "Invalid password."
-        });
-    }
+            // Try to find the user by email or username
+            var user = await _userManager.FindByEmailAsync(logInDTO.UsernameOrEmail)
+                     ?? await _userManager.FindByNameAsync(logInDTO.UsernameOrEmail);
 
-    var roles = await _userManager.GetRolesAsync(user);
-    var token = GenerateToken(user); // Ensure this method accepts roles
+            if (user == null)
+            {
+                return Unauthorized(new AuthResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "Invalid login credentials."
+                });
+            }
 
-    return Ok(new AuthResponseDTO
-    {
-        Token = token,
-        IsSuccess = true,
-        Message = "Login successful"
-    });
-}
+            // Validate password
+            if (!await _userManager.CheckPasswordAsync(user, logInDTO.Password))
+            {
+                return Unauthorized(new AuthResponseDTO
+                {
+                    IsSuccess = false,
+                    Message = "Invalid login credentials."
+                });
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var token = GenerateToken(user); // Pass roles in if needed
+
+            return Ok(new AuthResponseDTO
+            {
+                Token = token,
+                IsSuccess = true,
+                Message = "Login successful"
+            });
+        }
+
 
         [Authorize]
         [HttpGet("detail")]
@@ -122,7 +151,9 @@ public async Task<ActionResult<AuthResponseDTO>> LogIn(LoginDto logInDTO)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(currentUserId);
-
+            var users = await _userManager.Users
+                                    .Include(u => u.Branch)  // Load branch data
+                                    .ToListAsync();
             if (user is null)
             {
                 return NotFound(new AuthResponseDTO
@@ -143,40 +174,45 @@ public async Task<ActionResult<AuthResponseDTO>> LogIn(LoginDto logInDTO)
                 PhonNumber = user.PhoneNumber,
                 TowFactorEnable = user.TwoFactorEnabled,
                 PhonNumberConfirm = user.PhoneNumberConfirmed,
-                AccessFailedCount = user.EmailConfirmed,
-                Branch_Id=user.Branch_Id
+                AccessFailedCount = user.AccessFailedCount,
+                Branch_Id=user.Branch_Id,
+                Branch = user.Branch != null ? new BranchUserDto
+                {
+                    Id = user.Branch.Id_Branch,
+                    Name = user.Branch.Name
+                } : null
             });
         }
 
         [HttpGet("GetUsers")]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
         {
-            // Fetch all users
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _userManager.Users
+                .Include(u => u.Branch)  // Load branch data
+                .ToListAsync();
 
-            // Fetch roles for all users concurrently
-            var userRolesTasks = users
-                .Select(async u => new
+            var userDetails = new List<UserResponseDto>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDetails.Add(new UserResponseDto
                 {
-                    User = u,
-                    Roles = await _userManager.GetRolesAsync(u) // Fetch roles asynchronously
-                })
-                .ToList();
-
-            // Wait for all role-fetching tasks to complete
-            var userRoles = await Task.WhenAll(userRolesTasks);
-
-            // Map users and their roles to UserDetailDTO
-            var userDetails = userRoles
-                .Select(ur => new UserResponseDto
-                {
-                    Id = ur.User.Id,
-                    ProfilePicture=ur.User.ProfilePicture,
-                    Email = ur.User.Email,
-                    Name = ur.User.Name,
-                    Roles = ur.Roles.ToArray() // Convert roles to an array
-                })
-                .ToList();
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    ProfilePicture = user.ProfilePicture,
+                    IsActive = user.IsActive,
+                    Branch_Id = user.Branch_Id,  // Now will show correct value
+                    Branch = user.Branch != null ? new BranchUserDto
+                    {
+                        Id = user.Branch.Id_Branch,
+                        Name = user.Branch.Name
+                    } : null,
+                    Roles = roles.ToArray()
+                });
+            }
 
             return Ok(userDetails);
         }
