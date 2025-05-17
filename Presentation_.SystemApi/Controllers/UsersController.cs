@@ -2,6 +2,7 @@
 using Application.System.UseCace.UserUseCases.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Presentation_.SystemApi.Controllers
 {
@@ -30,16 +31,30 @@ namespace Presentation_.SystemApi.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var result = await _userUseCases.GetAllUsersAsync();
-
+            if (!result.Succeeded)
+            {
+                return StatusCode(int.Parse(result.Status), new
+                {
+                    message = result.Message,
+                    code = result.Status
+                });
+            }
             return Ok(result.Data);
         }
 
-
+        //[EnableRateLimiting("LoginLimit")]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
             var result = await _userUseCases.LoginUserAsync(request);
-
+            if (!result.Succeeded)
+            {
+                return StatusCode(int.Parse(result.Status), new
+                {
+                    message = result.Message,
+                    code = result.Status
+                });
+            }
             return Ok(result.Data);
         }
 
@@ -47,8 +62,15 @@ namespace Presentation_.SystemApi.Controllers
         public async Task<IActionResult> GetUserDetails()
         {
                 var result = await _userUseCases.GetUserDetailAsync();
-
-                return Ok(result.Data);
+                if (!result.Succeeded)
+                {
+                    return StatusCode(int.Parse(result.Status), new
+                    {
+                        message = result.Message,
+                        code = result.Status
+                    });
+                }
+            return Ok(result.Data);
            
         }
 

@@ -88,11 +88,11 @@ namespace Application.System.UseCace.UserUseCases.Implement
             using (_logger.BeginScope("Login attempt for {Identifier}", request.UsernameOrEmail))
             {
                 // Input validation
-                if (string.IsNullOrWhiteSpace(request.UsernameOrEmail))
-                    return Response<AuthResponseDTO>.Failure("Username/email required", "400");
+                //if (string.IsNullOrWhiteSpace(request.UsernameOrEmail))
+                //    return Response<AuthResponseDTO>.Failure("Username/email required111", "400");
 
-                if (string.IsNullOrWhiteSpace(request.Password))
-                    return Response<AuthResponseDTO>.Failure("Password required", "400");
+                //if (string.IsNullOrWhiteSpace(request.Password))
+                //    return Response<AuthResponseDTO>.Failure("Password required", "400");
 
                 try
                 {

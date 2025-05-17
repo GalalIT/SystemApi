@@ -37,12 +37,17 @@ using Domin.System.IRepository.IUnitOfRepository;
 using Infrastructure.System.Data;
 using Infrastructure.System.Repository.Product_UnitRepository;
 using Infrastructure.System.Repository.UnitOfRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.RateLimiting;
 
 
 namespace Infrastructure.System.Extention
@@ -51,7 +56,7 @@ namespace Infrastructure.System.Extention
     {
         public static IServiceCollection AddPresistence(this IServiceCollection services, IConfiguration configuration)
         {
-            
+
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -64,7 +69,7 @@ namespace Infrastructure.System.Extention
             }
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-            
+
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 // Customize password requirements
@@ -78,6 +83,40 @@ namespace Infrastructure.System.Extention
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+            //services.AddRateLimiter(options =>
+            //{
+            //    options.AddFixedWindowLimiter("LoginLimit", opt =>
+            //    {
+            //        opt.PermitLimit = 2; // 5 محاولات تسجيل دخول فقط
+            //        opt.Window = TimeSpan.FromMinutes(2); // كل 5 دقائق
+            //        opt.QueueLimit = 0; // لا نسمح بأي طلبات في قائمة الانتظار
+            //    });
+
+            //    options.OnRejected = (context, _) =>
+            //    {
+            //        Console.WriteLine($"Rate limit exceeded for IP: {context.HttpContext.Connection.RemoteIpAddress}");
+            //        context.HttpContext.Response.StatusCode = 429;
+            //        context.HttpContext.Response.WriteAsync("Too many login attempts. Please try again later.");
+            //        return new ValueTask();
+            //    };
+            //});
+            //services.AddRateLimiter(options =>
+            //{
+            //    options.AddFixedWindowLimiter("LoginLimit", opt =>
+            //    {
+            //        opt.PermitLimit = 2;
+            //        opt.Window = TimeSpan.FromMinutes(2);
+            //        opt.QueueLimit = 0;
+            //    });
+
+            //    options.OnRejected = async (context, cancellationToken) =>
+            //    {
+            //        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            //        await context.HttpContext.Response.WriteAsync(
+            //            "Too many login attempts. Please try again later.",
+            //            cancellationToken);
+            //    };
+            //});
             //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             //////////////////////////////////////////Difine the UseCase ////////////////////
 
@@ -111,6 +150,31 @@ namespace Infrastructure.System.Extention
 
             ///
             /////////////////////////////////////////////////////////////////////////////////////
+
+
+            ////////////////////////////////////////// JWTSetting  ////////////////////
+            var JWTSetting = configuration.GetSection("JWTSetting");
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidAudience = JWTSetting["ValidAudience"],
+                    ValidIssuer = JWTSetting["ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSetting.GetSection("SecretKey").Value))
+                };
+            });
             return services;
         }
     }

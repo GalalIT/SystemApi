@@ -27,17 +27,17 @@ namespace Application.System.Services.UserServices
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<AllUserServices> _logger;
         private readonly IUnitOfRepository _unitOfWork;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        //private readonly RoleManager<IdentityRole> _roleManager;
 
         public AllUserServices(
             ITokenGenerationOperation tokenOperation,
-            RoleManager<IdentityRole> roleManager,
+            //RoleManager<IdentityRole> roleManager,
             IUnitOfRepository unitOfRepository,
             IHttpContextAccessor httpContextAccessor,
             ILogger<AllUserServices> logger)
         {
             _tokenOperation = tokenOperation ?? throw new ArgumentNullException(nameof(tokenOperation));
-            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+            //_roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _unitOfWork = unitOfRepository ?? throw new ArgumentNullException(nameof(unitOfRepository));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // <-- Ensure this is here
@@ -84,10 +84,10 @@ namespace Application.System.Services.UserServices
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(loginDto.UsernameOrEmail) || string.IsNullOrWhiteSpace(loginDto.Password))
-                {
-                    return Response<AuthResponseDTO>.Failure("Username/email and password are required.", "400");
-                }
+                //if (string.IsNullOrWhiteSpace(loginDto.UsernameOrEmail) || string.IsNullOrWhiteSpace(loginDto.Password))
+                //{
+                //    return Response<AuthResponseDTO>.Failure("Username/email and password are required.", "400");
+                //}
 
                 var user = await FindUserByEmailOrUsernameAsync(loginDto.UsernameOrEmail);
 

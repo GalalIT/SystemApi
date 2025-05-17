@@ -51,15 +51,7 @@ namespace Application.System.Utility
                 Status = status
             };
         }
-        public static Response<T> SuccessToken(string token, string message = "Operation succeeded", string status = "200")
-        {
-            return new Response<T>
-            {
-                Succeeded = true,
-                Message = message,
-                Status = status
-            };
-        }
+        
 
         public static async Task<Response<T>> SuccessAsync(T data, string message = "Operation succeeded", string status = "200")
         {
