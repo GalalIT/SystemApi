@@ -34,9 +34,11 @@ using Application.System.UseCace.UserUseCases.Interface;
 using Domin.System.Entities;
 using Domin.System.IRepository.IProduct_UnitRepository;
 using Domin.System.IRepository.IUnitOfRepository;
+using Domin.System.IRepository.IUserRepository;
 using Infrastructure.System.Data;
 using Infrastructure.System.Repository.Product_UnitRepository;
 using Infrastructure.System.Repository.UnitOfRepository;
+using Infrastructure.System.Repository.UserRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -69,7 +71,7 @@ namespace Infrastructure.System.Extention
             }
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
+            //services.AddLogging();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 // Customize password requirements
@@ -147,6 +149,7 @@ namespace Infrastructure.System.Extention
             ///
 
             services.AddScoped<IUnitOfRepository, UnitOfRepository>();
+            services.AddScoped<IAllRoleRepository, AllUserRepository>();
 
             ///
             /////////////////////////////////////////////////////////////////////////////////////

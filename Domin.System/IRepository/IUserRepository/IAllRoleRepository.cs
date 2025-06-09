@@ -17,5 +17,7 @@ namespace Domin.System.IRepository.IUserRepository
         Task<IdentityResult> RemoveFromRoleAsync(ApplicationUser user, string role);
         Task<IdentityResult> RemoveFromRolesAsync(ApplicationUser user, IEnumerable<string> roles);
         Task<bool> IsInRoleAsync(ApplicationUser user, string role);
+        Task<IdentityResult> CreateRoleAsync(string roleName);
+
     }
 }

@@ -53,10 +53,10 @@ namespace Infrastructure.System.Repository.UnitOfRepository
             RoleManager<IdentityRole> roleManager,
             ILoggerFactory loggerFactory)
         {
-            _context = context;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _loggerFactory = loggerFactory;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+            _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
 
             InitializeRepositories();
         }

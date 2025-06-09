@@ -60,26 +60,35 @@ namespace Application.System.Services.UserServices
                     Name = registerDto.Name,
                     UserName = new MailAddress(registerDto.Email).User,
                     Branch_Id = registerDto.Branch_Id
-
                 };
+
                 var result = await _unitOfWork._User.AddAsync(user, registerDto.Password);
                 if (!result.Succeeded)
-                    return Response<CreateUserDto>.Failure("Some thing went wrong", "400");
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return Response<CreateUserDto>.Failure($"User creation failed: {errors}", "400");
+                }
 
                 var code = await _unitOfWork._User.GenerateEmailConfirmationTokenAsync(user);
 
-                await AssignRolesToUser(user, registerDto.Roles);
+                try
+                {
+                    await AssignRolesToUser(user, registerDto.Roles);
+                }
+                catch (Exception ex)
+                {
+                    // This will catch the role assignment failure
+                    return Response<CreateUserDto>.Failure($"User created but role assignment failed: {ex.Message}", "400");
+                }
 
-                return Response<CreateUserDto>.Success(registerDto, "Success create  user");
+                return Response<CreateUserDto>.Success(registerDto, "Successfully created user");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Full error during login");
+                _logger.LogError(ex, "Full error during registration");
                 return Response<CreateUserDto>.Failure($"Failed to create User: {ex.Message}", "500");
-
             }
         }
-
         public async Task<Response<AuthResponseDTO>> LoginAsync(LoginDto loginDto)
         {
             try
@@ -219,7 +228,12 @@ namespace Application.System.Services.UserServices
             if (roles == null || !roles.Any())
             {
                 _logger.LogInformation("No roles specified, assigning default User role");
-                await _unitOfWork._User.AddToRoleAsync(user, "User");
+                var defaultRoleResult = await _unitOfWork._User.AddToRoleAsync(user, "User");
+                if (!defaultRoleResult.Succeeded)
+                {
+                    _logger.LogError("Failed to assign default User role. Errors: {Errors}",
+                        string.Join(", ", defaultRoleResult.Errors.Select(e => e.Description)));
+                }
                 return;
             }
 
@@ -229,23 +243,35 @@ namespace Application.System.Services.UserServices
             {
                 try
                 {
-                    _logger.LogInformation("Checking role {Role}", role);
-                    if (await _unitOfWork._User.RoleExistsAsync(role))
+                    _logger.LogInformation("Attempting to assign role: {Role}", role);
+
+                    // Check if role exists
+                    if (!await _unitOfWork._User.RoleExistsAsync(role))
                     {
-                        _logger.LogInformation("Adding role {Role} to user", role);
-                        await _unitOfWork._User.AddToRoleAsync(user, role);
+                        _logger.LogWarning("Role {Role} does not exist in the system", role);
+                        continue;
                     }
-                    else
+
+                    // Assign the role
+                    var result = await _unitOfWork._User.AddToRoleAsync(user, role);
+
+                    if (!result.Succeeded)
                     {
-                        _logger.LogWarning("Role {Role} does not exist", role);
+                        var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                        _logger.LogError("Failed to assign role {Role}. Errors: {Errors}", role, errors);
+                        throw new Exception($"Failed to assign role {role}. Errors: {errors}");
                     }
+
+                    _logger.LogInformation("Successfully assigned role {Role} to user", role);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to assign role {Role}", role);
+                    throw new Exception($"Failed to assign role {role}", ex);
                 }
             }
         }
+
         private async Task<ApplicationUser> FindUserByEmailOrUsernameAsync(string usernameOrEmail)
         {
             var user = await _unitOfWork._User.GetByEmailAsync(usernameOrEmail);

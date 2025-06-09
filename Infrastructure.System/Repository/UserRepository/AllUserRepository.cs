@@ -19,11 +19,12 @@ namespace Infrastructure.System.Repository.UserRepository
         private readonly ILogger<AllUserRepository> _logger;
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public AllUserRepository(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, AppDbContext context, ILogger<AllUserRepository> logger=null)
+        public AllUserRepository(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, AppDbContext context, ILogger<AllUserRepository> logger)
         {
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _context = context;
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<int> GetUserBranchIdAsync(string userId)
@@ -177,24 +178,37 @@ namespace Infrastructure.System.Repository.UserRepository
         }
         public async Task<bool> RoleExistsAsync(string roleName)
         {
-            if (string.IsNullOrWhiteSpace(roleName))
+            // Add null check for the logger itself as a safeguard
+            if (_logger == null)
             {
-                _logger.LogError("RoleExistsAsync called with null or empty role name");
-                throw new ArgumentNullException(nameof(roleName));
+                throw new InvalidOperationException("Logger dependency not initialized");
             }
 
             try
             {
-                _logger.LogDebug("Checking if role {RoleName} exists", roleName);
-                var exists = await _roleManager.RoleExistsAsync(roleName);
+                if (string.IsNullOrWhiteSpace(roleName))
+                {
+                    _logger.LogWarning("Role name was null or empty");
+                    return false;
+                }
+
+                var normalizedName = _roleManager.NormalizeKey(roleName);
+                var exists = await _roleManager.Roles
+                    .AnyAsync(r => r.NormalizedName == normalizedName);
+
                 _logger.LogDebug("Role {RoleName} exists: {Exists}", roleName, exists);
                 return exists;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error checking if role {RoleName} exists", roleName);
-                throw; // Re-throw to allow handling at higher level
+                throw;
             }
+        }
+        public async Task<IdentityResult> CreateRoleAsync(string roleName)
+        {
+            var role = new IdentityRole(roleName);
+            return await _roleManager.CreateAsync(role);
         }
     }
 }
