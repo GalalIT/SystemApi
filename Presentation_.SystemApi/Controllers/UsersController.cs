@@ -1,5 +1,6 @@
 ﻿using Application.System.DTO;
 using Application.System.UseCace.UserUseCases.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -8,6 +9,7 @@ namespace Presentation_.SystemApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserUseCases _userUseCases;
@@ -20,6 +22,7 @@ namespace Presentation_.SystemApi.Controllers
             _logger = logger;
         }
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] CreateUserDto registerDto)
         {
             var result = await _userUseCases.RegisterUserAsync(registerDto);
@@ -28,6 +31,7 @@ namespace Presentation_.SystemApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsers()
         {
             var result = await _userUseCases.GetAllUsersAsync();
@@ -44,6 +48,7 @@ namespace Presentation_.SystemApi.Controllers
 
         //[EnableRateLimiting("LoginLimit")]
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
             var result = await _userUseCases.LoginUserAsync(request);
@@ -59,6 +64,7 @@ namespace Presentation_.SystemApi.Controllers
         }
 
         [HttpGet("GetUserDetails")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserDetails()
         {
                 var result = await _userUseCases.GetUserDetailAsync();

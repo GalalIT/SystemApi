@@ -1,6 +1,7 @@
 ﻿using Application.System.DTO;
 using Application.System.UseCace.ProductUseCase.Interface;
 using Application.System.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace Presentation_.SystemApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductUseCase _productUseCase;

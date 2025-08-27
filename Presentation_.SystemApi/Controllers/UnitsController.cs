@@ -1,12 +1,14 @@
 ﻿using Application.System.DTO;
 using Application.System.UseCace.UnitUseCase.Interface;
 using Application.System.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation_.SystemApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UnitsController : ControllerBase
     {
         private readonly IUnitUseCase _unitUseCase;

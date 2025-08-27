@@ -1,12 +1,14 @@
 ﻿using Application.System.DTO;
 using Application.System.UseCace.BranchUseCase.Interface;
 using Application.System.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation_.SystemApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BranchesController : ControllerBase
     {
         private readonly IBranchUseCase _branchUseCase;
